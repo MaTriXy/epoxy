@@ -2,8 +2,12 @@ package com.airbnb.epoxy;
 
 import android.support.v7.widget.RecyclerView.AdapterDataObserver;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -22,7 +26,9 @@ import static org.mockito.Mockito.verify;
 @RunWith(TestRunner.class)
 public class EpoxyAdapterTest {
 
+  @Rule public ExpectedException thrown = ExpectedException.none();
   private final TestAdapter testAdapter = new TestAdapter();
+  private final TestObserver differObserver = new TestObserver();
   @Mock AdapterDataObserver observer;
 
   @Before
@@ -40,6 +46,7 @@ public class EpoxyAdapterTest {
     testAdapter.addModel(new TestModel());
     verify(observer).onItemRangeInserted(1, 1);
     assertEquals(2, testAdapter.models.size());
+    checkDifferState();
   }
 
   @Test
@@ -58,6 +65,8 @@ public class EpoxyAdapterTest {
     testAdapter.addModels(list2);
     verify(observer).onItemRangeInserted(2, 2);
     assertEquals(4, testAdapter.models.size());
+
+    checkDifferState();
   }
 
   @Test
@@ -69,6 +78,8 @@ public class EpoxyAdapterTest {
     testAdapter.addModels(new TestModel(), new TestModel());
     verify(observer).onItemRangeInserted(2, 2);
     assertEquals(4, testAdapter.models.size());
+
+    checkDifferState();
   }
 
   @Test
@@ -77,6 +88,19 @@ public class EpoxyAdapterTest {
     testAdapter.addModels(testModel);
     testAdapter.notifyModelChanged(testModel);
     verify(observer).onItemRangeChanged(0, 1, null);
+
+    checkDifferState();
+  }
+
+  @Test
+  public void testNotifyModelChangedWithPayload() {
+    Object payload = new Object();
+    TestModel testModel = new TestModel();
+    testAdapter.addModels(testModel);
+    testAdapter.notifyModelChanged(testModel, payload);
+    verify(observer).onItemRangeChanged(0, 1, payload);
+
+    checkDifferState();
   }
 
   @Test(expected = IllegalStateException.class)
@@ -93,6 +117,8 @@ public class EpoxyAdapterTest {
     verify(observer, times(2)).onItemRangeInserted(0, 1);
     assertEquals(2, testAdapter.models.size());
     assertEquals(firstModel, testAdapter.models.get(1));
+
+    checkDifferState();
   }
 
   @Test(expected = IllegalStateException.class)
@@ -109,6 +135,8 @@ public class EpoxyAdapterTest {
     verify(observer).onItemRangeInserted(1, 1);
     assertEquals(2, testAdapter.models.size());
     assertEquals(firstModel, testAdapter.models.get(0));
+
+    checkDifferState();
   }
 
   @Test
@@ -119,6 +147,22 @@ public class EpoxyAdapterTest {
     testAdapter.removeModel(testModel);
     verify(observer).onItemRangeRemoved(0, 1);
     assertEquals(0, testAdapter.models.size());
+
+    checkDifferState();
+  }
+
+  @Test
+  public void testRemoveAllModels() {
+    for (int i = 0; i < 10; i++) {
+      TestModel model = new TestModel();
+      testAdapter.addModels(model);
+    }
+
+    testAdapter.removeAllModels();
+    verify(observer).onItemRangeRemoved(0, 10);
+    assertEquals(0, testAdapter.models.size());
+
+    checkDifferState();
   }
 
   @Test
@@ -133,6 +177,8 @@ public class EpoxyAdapterTest {
     testAdapter.removeAllAfterModel(models.get(5));
     verify(observer).onItemRangeRemoved(6, 4);
     assertEquals(models.subList(0, 6), testAdapter.models);
+
+    checkDifferState();
   }
 
   @Test
@@ -144,6 +190,8 @@ public class EpoxyAdapterTest {
     testAdapter.showModel(testModel);
     verify(observer).onItemRangeChanged(0, 1, null);
     assertTrue(testModel.isShown());
+
+    checkDifferState();
   }
 
   @Test
@@ -161,6 +209,8 @@ public class EpoxyAdapterTest {
     verify(observer).onItemRangeChanged(1, 1, null);
     assertTrue(testModel1.isShown());
     assertTrue(testModel2.isShown());
+
+    checkDifferState();
   }
 
   @Test
@@ -178,6 +228,8 @@ public class EpoxyAdapterTest {
     verify(observer).onItemRangeChanged(1, 1, null);
     assertTrue(testModel1.isShown());
     assertTrue(testModel2.isShown());
+
+    checkDifferState();
   }
 
   @Test
@@ -195,6 +247,8 @@ public class EpoxyAdapterTest {
     verify(observer).onItemRangeChanged(1, 1, null);
     assertTrue(testModel1.isShown());
     assertTrue(testModel2.isShown());
+
+    checkDifferState();
   }
 
   @Test
@@ -212,6 +266,8 @@ public class EpoxyAdapterTest {
     verify(observer).onItemRangeChanged(1, 1, null);
     assertTrue(testModel1.isShown());
     assertTrue(testModel2.isShown());
+
+    checkDifferState();
   }
 
   @Test
@@ -225,6 +281,8 @@ public class EpoxyAdapterTest {
     verify(observer).onItemRangeChanged(1, 1, null);
     assertFalse(testModel1.isShown());
     assertFalse(testModel2.isShown());
+
+    checkDifferState();
   }
 
   @Test
@@ -238,6 +296,8 @@ public class EpoxyAdapterTest {
     verify(observer).onItemRangeChanged(1, 1, null);
     assertFalse(testModel1.isShown());
     assertFalse(testModel2.isShown());
+
+    checkDifferState();
   }
 
   @Test
@@ -258,6 +318,8 @@ public class EpoxyAdapterTest {
     testAdapter.hideModel(testModel);
     verify(observer).onItemRangeChanged(0, 1, null);
     assertFalse(testModel.isShown());
+
+    checkDifferState();
   }
 
   @Test
@@ -271,6 +333,8 @@ public class EpoxyAdapterTest {
     verify(observer).onItemRangeChanged(1, 1, null);
     assertFalse(testModel1.isShown());
     assertFalse(testModel2.isShown());
+
+    checkDifferState();
   }
 
   @Test
@@ -284,6 +348,8 @@ public class EpoxyAdapterTest {
     verify(observer).onItemRangeChanged(1, 1, null);
     assertFalse(testModel1.isShown());
     assertFalse(testModel2.isShown());
+
+    checkDifferState();
   }
 
   @Test
@@ -305,5 +371,52 @@ public class EpoxyAdapterTest {
     for (int i = 0; i < modelCount; i++) {
       assertEquals(i <= hideIndex, models.get(i).isShown());
     }
+
+    checkDifferState();
+  }
+
+  @Test
+  public void testThrowIfChangeModelIdAfterNotify() {
+    TestModel testModel = new TestModel();
+    testModel.id(100);
+
+    testAdapter.addModel(testModel);
+
+    thrown.expect(IllegalEpoxyUsage.class);
+    thrown.expectMessage("Cannot change a model's id after it has been added to the adapter");
+    testModel.id(200);
+  }
+
+  @Test
+  public void testAllowSetSameModelIdAfterNotify() {
+    TestModel testModel = new TestModel();
+    testModel.id(100);
+
+    testAdapter.addModel(testModel);
+    testModel.id(100);
+  }
+
+  @Test
+  public void testThrowIfChangeModelIdAfterDiff() {
+    TestModel testModel = new TestModel();
+    testModel.id(100);
+
+    testAdapter.models.add(testModel);
+    testAdapter.notifyModelsChanged();
+
+    thrown.expect(IllegalEpoxyUsage.class);
+    thrown.expectMessage("Cannot change a model's id after it has been added to the adapter");
+    testModel.id(200);
+  }
+
+  /** Make sure that the differ is in a correct state, and then running it produces no changes. */
+  private void checkDifferState() {
+    differObserver.operationCount = 0;
+
+    testAdapter.registerAdapterDataObserver(differObserver);
+    testAdapter.notifyModelsChanged();
+    testAdapter.unregisterAdapterDataObserver(differObserver);
+
+    Assert.assertEquals("Should not have any operations", 0, differObserver.operationCount);
   }
 }

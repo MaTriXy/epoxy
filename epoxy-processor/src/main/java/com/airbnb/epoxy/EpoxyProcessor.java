@@ -1,56 +1,31 @@
 package com.airbnb.epoxy;
 
-import android.support.annotation.LayoutRes;
-
-import com.airbnb.epoxy.ClassToGenerateInfo.ConstructorInfo;
-import com.google.auto.service.AutoService;
-import com.squareup.javapoet.ArrayTypeName;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.MethodSpec.Builder;
-import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedOptions;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
 
-import static com.squareup.javapoet.TypeName.BOOLEAN;
-import static com.squareup.javapoet.TypeName.BYTE;
-import static com.squareup.javapoet.TypeName.CHAR;
-import static com.squareup.javapoet.TypeName.DOUBLE;
-import static com.squareup.javapoet.TypeName.FLOAT;
-import static com.squareup.javapoet.TypeName.INT;
-import static com.squareup.javapoet.TypeName.LONG;
-import static com.squareup.javapoet.TypeName.SHORT;
-import static javax.lang.model.element.ElementKind.CLASS;
-import static javax.lang.model.element.Modifier.FINAL;
-import static javax.lang.model.element.Modifier.PRIVATE;
-import static javax.lang.model.element.Modifier.STATIC;
+import static com.airbnb.epoxy.ConfigManager.PROCESSOR_OPTION_DISABLE_KOTLIN_EXTENSION_GENERATION;
+import static com.airbnb.epoxy.ConfigManager.PROCESSOR_OPTION_IMPLICITLY_ADD_AUTO_MODELS;
+import static com.airbnb.epoxy.ConfigManager.PROCESSOR_OPTION_REQUIRE_ABSTRACT_MODELS;
+import static com.airbnb.epoxy.ConfigManager.PROCESSOR_OPTION_REQUIRE_HASHCODE;
+import static com.airbnb.epoxy.ConfigManager.PROCESSOR_OPTION_VALIDATE_MODEL_USAGE;
+import static com.airbnb.epoxy.EpoxyProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME;
 
 /**
  * Looks for {@link EpoxyAttribute} annotations and generates a subclass for all classes that have
@@ -59,29 +34,124 @@ import static javax.lang.model.element.Modifier.STATIC;
  * since generated classes would have to be abstract in order to guarantee they compile, and that
  * reduces their usefulness and doesn't make as much sense to support.
  */
-@AutoService(Processor.class)
+@SupportedOptions({
+    PROCESSOR_OPTION_IMPLICITLY_ADD_AUTO_MODELS,
+    PROCESSOR_OPTION_VALIDATE_MODEL_USAGE,
+    PROCESSOR_OPTION_REQUIRE_ABSTRACT_MODELS,
+    PROCESSOR_OPTION_REQUIRE_HASHCODE,
+    PROCESSOR_OPTION_DISABLE_KOTLIN_EXTENSION_GENERATION,
+    KAPT_KOTLIN_GENERATED_OPTION_NAME
+})
 public class EpoxyProcessor extends AbstractProcessor {
-  private static final String GENERATED_CLASS_NAME_SUFFIX = "_";
-  private static TypeMirror epoxyModelType;
 
-  private Filer filer;
+  // This option will be presented when processed by kapt, and it tells us where to put our
+  // generated kotlin files
+  // https://github.com/JetBrains/kotlin-examples/blob/master/gradle/kotlin-code-generation
+  // /annotation-processor/src/main/java/TestAnnotationProcessor.kt
+  public static final String KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated";
+
+  private final Map<String, String> testOptions;
   private Messager messager;
   private Elements elementUtils;
   private Types typeUtils;
 
+  private ConfigManager configManager;
+  private final ErrorLogger errorLogger = new ErrorLogger();
+  private ControllerProcessor controllerProcessor;
+  private DataBindingProcessor dataBindingProcessor;
+  private final List<GeneratedModelInfo> generatedModels = new ArrayList<>();
+  private ModelProcessor modelProcessor;
+  private LithoSpecProcessor lithoSpecProcessor;
+  private KotlinModelBuilderExtensionWriter kotlinExtensionWriter;
+  private ModelViewProcessor modelViewProcessor;
+
+  public EpoxyProcessor() {
+    this(Collections.emptyMap());
+  }
+
+  /**
+   * Constructor to use for tests to pass annotation processor options since we can't get them from
+   * the build.gradle
+   */
+  public EpoxyProcessor(Map<String, String> options) {
+    testOptions = options;
+  }
+
+  /** For testing. */
+  public static EpoxyProcessor withNoValidation() {
+    HashMap<String, String> options = new HashMap<>();
+    options.put(PROCESSOR_OPTION_VALIDATE_MODEL_USAGE, "false");
+    return new EpoxyProcessor(options);
+  }
+
+  /** For testing. */
+  public static EpoxyProcessor withImplicitAdding() {
+    HashMap<String, String> options = new HashMap<>();
+    options.put(PROCESSOR_OPTION_IMPLICITLY_ADD_AUTO_MODELS, "true");
+    return new EpoxyProcessor(options);
+  }
+
   @Override
   public synchronized void init(ProcessingEnvironment processingEnv) {
     super.init(processingEnv);
-    filer = processingEnv.getFiler();
+    Filer filer = processingEnv.getFiler();
     messager = processingEnv.getMessager();
     elementUtils = processingEnv.getElementUtils();
-    epoxyModelType = elementUtils.getTypeElement(EpoxyModel.class.getCanonicalName()).asType();
     typeUtils = processingEnv.getTypeUtils();
+
+    ResourceProcessor resourceProcessor =
+        new ResourceProcessor(processingEnv, errorLogger, elementUtils, typeUtils);
+
+    configManager =
+        new ConfigManager(!testOptions.isEmpty() ? testOptions : processingEnv.getOptions(),
+            elementUtils, typeUtils);
+
+    DataBindingModuleLookup dataBindingModuleLookup =
+        new DataBindingModuleLookup(elementUtils, typeUtils, errorLogger, resourceProcessor);
+
+    GeneratedModelWriter modelWriter = new GeneratedModelWriter(filer, typeUtils, errorLogger,
+        resourceProcessor,
+        configManager, dataBindingModuleLookup, elementUtils);
+
+    controllerProcessor = new ControllerProcessor(filer, elementUtils, typeUtils, errorLogger,
+        configManager);
+
+    dataBindingProcessor =
+        new DataBindingProcessor(elementUtils, typeUtils, errorLogger, configManager,
+            resourceProcessor, dataBindingModuleLookup, modelWriter);
+
+    modelProcessor = new ModelProcessor(
+        elementUtils, typeUtils, configManager, errorLogger,
+        modelWriter);
+
+    modelViewProcessor = new ModelViewProcessor(
+        elementUtils, typeUtils, configManager, errorLogger,
+        modelWriter, resourceProcessor);
+
+    lithoSpecProcessor = new LithoSpecProcessor(
+        elementUtils, typeUtils, configManager, errorLogger, modelWriter);
+
+    kotlinExtensionWriter = new KotlinModelBuilderExtensionWriter(processingEnv);
   }
 
   @Override
   public Set<String> getSupportedAnnotationTypes() {
-    return Collections.singleton(EpoxyAttribute.class.getCanonicalName());
+    Set<String> types = new LinkedHashSet<>();
+
+    types.add(EpoxyModelClass.class.getCanonicalName());
+    types.add(EpoxyAttribute.class.getCanonicalName());
+    types.add(PackageEpoxyConfig.class.getCanonicalName());
+    types.add(AutoModel.class.getCanonicalName());
+    types.add(EpoxyDataBindingLayouts.class.getCanonicalName());
+    types.add(EpoxyDataBindingPattern.class.getCanonicalName());
+    types.add(ModelView.class.getCanonicalName());
+    types.add(PackageModelViewConfig.class.getCanonicalName());
+    types.add(TextProp.class.getCanonicalName());
+    types.add(CallbackProp.class.getCanonicalName());
+
+    types.add(ClassNames.LITHO_ANNOTATION_LAYOUT_SPEC.reflectionName());
+
+    return types;
   }
 
   @Override
@@ -91,414 +161,77 @@ public class EpoxyProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    LinkedHashMap<TypeElement, ClassToGenerateInfo> modelClassMap = new LinkedHashMap<>();
-
-    for (Element attribute : roundEnv.getElementsAnnotatedWith(EpoxyAttribute.class)) {
-      try {
-        processAttribute(attribute, modelClassMap);
-      } catch (EpoxyProcessorException e) {
-        writeError(e);
-      }
+    try {
+      processRound(roundEnv);
+    } catch (Exception e) {
+      errorLogger.logError(e);
     }
 
-    updateClassesForInheritance(modelClassMap);
+    if (roundEnv.processingOver()) {
+      // We wait until the very end to log errors so that all the generated classes are still
+      // created.
+      // Otherwise the compiler error output is clogged with lots of errors from the generated
+      // classes  not existing, which makes it hard to see the actual errors.
 
-    for (Entry<TypeElement, ClassToGenerateInfo> modelEntry : modelClassMap.entrySet()) {
-      try {
-        generateClassForModel(modelEntry.getValue());
-      } catch (IOException e) {
-        writeError(e);
-      }
+      validateAttributesImplementHashCode(generatedModels);
+      errorLogger.writeExceptions(messager);
     }
 
-    return true;
+    // Let any other annotation processors use our annotations if they want to
+    return false;
   }
 
-  private void processAttribute(Element attribute,
-      Map<TypeElement, ClassToGenerateInfo> modelClassMap)
-      throws EpoxyProcessorException {
+  private void processRound(RoundEnvironment roundEnv) {
+    errorLogger.logErrors(configManager.processConfigurations(roundEnv));
 
-    validateAccessibleViaGeneratedCode(attribute);
-    TypeElement classElement = (TypeElement) attribute.getEnclosingElement();
+    generatedModels.addAll(modelProcessor.processModels(roundEnv));
 
-    ClassToGenerateInfo helperClass = getOrCreateTargetClass(modelClassMap, classElement);
+    generatedModels.addAll(dataBindingProcessor.process(roundEnv));
 
-    String name = attribute.getSimpleName().toString();
-    TypeName type = TypeName.get(attribute.asType());
-    boolean hasSuper = hasSuperMethod(classElement, name);
-    helperClass.addAttribute(
-        new AttributeInfo(name, type, attribute.getAnnotationMirrors(), hasSuper));
-  }
+    generatedModels.addAll(lithoSpecProcessor.processSpecs(roundEnv));
 
-  /**
-   * Check if the given class or any of its super classes have a super method with the given name.
-   * Private methods are ignored since the generated subclass can't call super on those.
-   */
-  private boolean hasSuperMethod(TypeElement classElement, String methodName) {
-    if (!isSubtype(classElement.asType(), epoxyModelType)) {
-      return false;
+    generatedModels.addAll(modelViewProcessor.process(roundEnv, generatedModels));
+
+    controllerProcessor.process(roundEnv);
+
+    // TODO: (eli_hart 8/23/17) don't wait until round over?
+    if (roundEnv.processingOver() && !configManager.disableKotlinExtensionGeneration()) {
+      kotlinExtensionWriter.generateExtensionsForModels(generatedModels);
     }
 
-    for (Element subElement : classElement.getEnclosedElements()) {
-      if (subElement.getKind() == ElementKind.METHOD
-          && !subElement.getModifiers().contains(Modifier.PRIVATE)
-          && subElement.getSimpleName().toString().equals(methodName)) {
-        return true;
-      }
-    }
-
-    Element superClass = typeUtils.asElement(classElement.getSuperclass());
-    return (superClass instanceof TypeElement)
-        && hasSuperMethod((TypeElement) superClass, methodName);
-  }
-
-  private void validateAccessibleViaGeneratedCode(Element attribute) throws
-      EpoxyProcessorException {
-
-    TypeElement enclosingElement = (TypeElement) attribute.getEnclosingElement();
-
-    // Verify method modifiers.
-    Set<Modifier> modifiers = attribute.getModifiers();
-    if (modifiers.contains(PRIVATE) || modifiers.contains(STATIC) || modifiers.contains(FINAL)) {
-      throwError(
-          "%s annotations must not be on private, final, or static fields. (class: %s, field: %s)",
-          EpoxyAttribute.class.getSimpleName(),
-          enclosingElement.getSimpleName(), attribute.getSimpleName());
-    }
-
-    // Nested classes must be static
-    if (enclosingElement.getNestingKind().isNested()) {
-      if (!enclosingElement.getModifiers().contains(STATIC)) {
-        throwError(
-            "Nested classes with %s annotations must be static. (class: %s, field: %s)",
-            EpoxyAttribute.class.getSimpleName(),
-            enclosingElement.getSimpleName(), attribute.getSimpleName());
-      }
-    }
-
-    // Verify containing type.
-    if (enclosingElement.getKind() != CLASS) {
-      throwError("%s annotations may only be contained in classes. (class: %s, field: %s)",
-          EpoxyAttribute.class.getSimpleName(),
-          enclosingElement.getSimpleName(), attribute.getSimpleName());
-    }
-
-    // Verify containing class visibility is not private.
-    if (enclosingElement.getModifiers().contains(PRIVATE)) {
-      throwError("%s annotations may not be contained in private classes. (class: %s, field: %s)",
-          EpoxyAttribute.class.getSimpleName(),
-          enclosingElement.getSimpleName(), attribute.getSimpleName());
+    if (controllerProcessor.hasControllersToGenerate()
+        && (!areModelsWaitingToWrite() || roundEnv.processingOver())) {
+      // This must be done after all generated model info is collected so we must wait until
+      // databinding is resolved.
+      // However, if there was an error with the databinding resolution we can at least try to
+      // finish writing the controllers before processing ends
+      controllerProcessor.resolveGeneratedModelsAndWriteJava(generatedModels);
     }
   }
 
-  private ClassToGenerateInfo getOrCreateTargetClass(
-      Map<TypeElement, ClassToGenerateInfo> modelClassMap, TypeElement classElement)
-      throws EpoxyProcessorException {
-
-    ClassToGenerateInfo classToGenerateInfo = modelClassMap.get(classElement);
-
-    boolean isFinal = classElement.getModifiers().contains(Modifier.FINAL);
-    if (isFinal) {
-      throwError("Class with %s annotations cannot be final: %s",
-          EpoxyAttribute.class.getSimpleName(), classElement.getSimpleName());
-    }
-
-    if (!isSubtype(classElement.asType(), epoxyModelType)) {
-      throwError("Class with %s annotations must extend %s (%s)",
-          EpoxyAttribute.class.getSimpleName(), epoxyModelType,
-          classElement.getSimpleName());
-    }
-
-    if (classToGenerateInfo == null) {
-      ClassName generatedClassName = getGeneratedClassName(classElement);
-      boolean isAbstract = classElement.getModifiers().contains(Modifier.ABSTRACT);
-      classToGenerateInfo = new ClassToGenerateInfo(classElement, generatedClassName, isAbstract);
-      modelClassMap.put(classElement, classToGenerateInfo);
-    }
-
-    return classToGenerateInfo;
+  private boolean areModelsWaitingToWrite() {
+    return dataBindingProcessor.hasModelsToWrite()
+        || modelProcessor.hasModelsToWrite()
+        || modelViewProcessor.hasModelsToWrite();
   }
 
-  private ClassName getGeneratedClassName(TypeElement classElement) {
-    String packageName = elementUtils.getPackageOf(classElement).getQualifiedName().toString();
+  private void validateAttributesImplementHashCode(
+      Collection<GeneratedModelInfo> generatedClasses) {
+    HashCodeValidator hashCodeValidator = new HashCodeValidator(typeUtils, elementUtils);
 
-    int packageLen = packageName.length() + 1;
-    String className =
-        classElement.getQualifiedName().toString().substring(packageLen).replace('.', '$');
+    for (GeneratedModelInfo generatedClass : generatedClasses) {
+      for (AttributeInfo attributeInfo : generatedClass.getAttributeInfo()) {
+        if (configManager.requiresHashCode(attributeInfo)
+            && attributeInfo.useInHash()
+            && !attributeInfo.ignoreRequireHashCode()) {
 
-    return ClassName.get(packageName, className + GENERATED_CLASS_NAME_SUFFIX);
-  }
-
-  /**
-   * Check each model for super classes that also have attributes. For each super class with
-   * attributes we add those attributes to the attributes of the generated class, so that a
-   * generated class contains all the attributes of its super classes combined.
-   */
-  private void updateClassesForInheritance(
-      LinkedHashMap<TypeElement, ClassToGenerateInfo> helperClassMap) {
-    for (Entry<TypeElement, ClassToGenerateInfo> entry : helperClassMap.entrySet()) {
-      LinkedHashMap<TypeElement, ClassToGenerateInfo> otherClasses =
-          new LinkedHashMap<>(helperClassMap);
-      otherClasses.remove(entry.getKey());
-
-      for (Entry<TypeElement, ClassToGenerateInfo> otherEntry : otherClasses.entrySet()) {
-        if (isSubtype(entry.getKey().asType(), otherEntry.getKey().asType())) {
-          entry.getValue().addAttributes(otherEntry.getValue().getAttributeInfo());
+          try {
+            hashCodeValidator.validate(attributeInfo);
+          } catch (EpoxyProcessorException e) {
+            errorLogger.logError(e);
+          }
         }
       }
     }
-  }
-
-  private boolean isSubtype(TypeMirror e1, TypeMirror e2) {
-    // We use erasure so that EpoxyModelA is considered a subtype of EpoxyModel<T extends View>
-    return typeUtils.isSubtype(e1, typeUtils.erasure(e2));
-  }
-
-  private void generateClassForModel(ClassToGenerateInfo info) throws IOException {
-    if (info.isOriginalClassAbstract()) {
-      // Don't extend classes that are abstract. If they don't contain all required
-      // methods then our generated class won't compile
-      return;
-    }
-
-    TypeSpec generatedClass = TypeSpec.classBuilder(info.getGeneratedName())
-        .addJavadoc("Generated file. Do not modify!")
-        .addModifiers(Modifier.PUBLIC)
-        .superclass(info.getOriginalClassName())
-        .addTypeVariables(info.getTypeVariables())
-        .addMethods(generateConstructors(info))
-        .addMethods(generateSettersAndGetters(info))
-        .build();
-
-    JavaFile.builder(info.getGeneratedName().packageName(), generatedClass)
-        .build()
-        .writeTo(filer);
-  }
-
-  /** Include any constructors that are in the super class. */
-  private Iterable<MethodSpec> generateConstructors(ClassToGenerateInfo info) {
-    List<MethodSpec> constructors = new ArrayList<>(info.getConstructors().size());
-
-    for (ConstructorInfo constructorInfo : info.getConstructors()) {
-      Builder builder = MethodSpec.constructorBuilder()
-          .addModifiers(constructorInfo.modifiers)
-          .addParameters(constructorInfo.params);
-
-      StringBuilder statementBuilder = new StringBuilder("super(");
-      boolean first = true;
-      for (ParameterSpec param : constructorInfo.params) {
-        if (!first) {
-          statementBuilder.append(", ");
-        }
-        first = false;
-        statementBuilder.append(param.name);
-      }
-      statementBuilder.append(")");
-
-      constructors.add(builder
-          .addStatement(statementBuilder.toString())
-          .build());
-    }
-
-    return constructors;
-  }
-
-  private List<MethodSpec> generateSettersAndGetters(ClassToGenerateInfo helperClass) {
-    List<MethodSpec> methods = new ArrayList<>();
-
-    for (AttributeInfo data : helperClass.getAttributeInfo()) {
-      methods.add(generateSetter(helperClass, data));
-      methods.add(generateGetter(data));
-    }
-
-    methods.addAll(buildDefaultSetters(helperClass));
-    methods.add(buildEquals(helperClass));
-    methods.add(buildHashCode(helperClass));
-
-    return methods;
-  }
-
-  private MethodSpec buildEquals(ClassToGenerateInfo helperClass) {
-    Builder builder = MethodSpec.methodBuilder("equals")
-        .addAnnotation(Override.class)
-        .addModifiers(Modifier.PUBLIC)
-        .returns(boolean.class)
-        .addParameter(Object.class, "o")
-        .beginControlFlow("if (o == this)")
-        .addStatement("return true")
-        .endControlFlow()
-        .beginControlFlow("if (!(o instanceof $T))", helperClass.getOriginalClassNameWithoutType())
-        .addStatement("return false")
-        .endControlFlow()
-        .beginControlFlow("if (!super.equals(o))")
-        .addStatement("return false")
-        .endControlFlow()
-        .addStatement("$T that = ($T) o", helperClass.getOriginalClassNameWithoutType(),
-            helperClass.getOriginalClassNameWithoutType());
-
-    for (AttributeInfo attributeInfo : helperClass.getAttributeInfo()) {
-      TypeName type = attributeInfo.getType();
-      String name = attributeInfo.getName();
-      if (type == FLOAT) {
-        builder.beginControlFlow("if (Float.compare(that.$L, $L) != 0)", name, name)
-            .addStatement("return false")
-            .endControlFlow();
-      } else if (type == DOUBLE) {
-        builder.beginControlFlow("if (Double.compare(that.$L, $L) != 0)", name, name)
-            .addStatement("return false")
-            .endControlFlow();
-      } else if (type.isPrimitive()) {
-        builder.beginControlFlow("if ($L != that.$L)", name, name)
-            .addStatement("return false")
-            .endControlFlow();
-      } else if (type instanceof ArrayTypeName) {
-        builder.beginControlFlow("if (!$T.equals($L, that.$L))", TypeName.get(Arrays.class), name,
-            name)
-            .addStatement("return false")
-            .endControlFlow();
-      } else {
-        builder
-            .beginControlFlow("if ($L != null ? !$L.equals(that.$L) : that.$L != null)", name, name,
-                name, name)
-            .addStatement("return false")
-            .endControlFlow();
-      }
-    }
-
-    return builder
-        .addStatement("return true")
-        .build();
-  }
-
-  private MethodSpec buildHashCode(ClassToGenerateInfo helperClass) {
-    Builder builder = MethodSpec.methodBuilder("hashCode")
-        .addAnnotation(Override.class)
-        .addModifiers(Modifier.PUBLIC)
-        .returns(int.class)
-        .addStatement("int result = super.hashCode()");
-
-    for (AttributeInfo attributeInfo : helperClass.getAttributeInfo()) {
-      if (attributeInfo.getType() == DOUBLE) {
-        builder.addStatement("long temp");
-        break;
-      }
-    }
-
-    for (AttributeInfo attributeInfo : helperClass.getAttributeInfo()) {
-      TypeName type = attributeInfo.getType();
-      String name = attributeInfo.getName();
-
-      if ((type == BYTE) || (type == CHAR) || (type == SHORT) || (type == INT)) {
-        builder.addStatement("result = 31 * result + $L", name);
-      } else if (type == LONG) {
-        builder.addStatement("result = 31 * result + (int) ($L ^ ($L >>> 32))", name, name);
-      } else if (type == FLOAT) {
-        builder.addStatement("result = 31 * result + ($L != +0.0f ? Float.floatToIntBits($L) : 0)",
-            name, name);
-      } else if (type == DOUBLE) {
-        builder.addStatement("temp = Double.doubleToLongBits($L)", name)
-            .addStatement("result = 31 * result + (int) (temp ^ (temp >>> 32))");
-      } else if (type == BOOLEAN) {
-        builder.addStatement("result = 31 * result + ($L ? 1 : 0)", name);
-      } else if (type instanceof ArrayTypeName) {
-        builder.addStatement("result = 31 * result + Arrays.hashCode($L)", name);
-      } else {
-        builder.addStatement("result = 31 * result + ($L != null ? $L.hashCode() : 0)", name, name);
-      }
-    }
-
-    return builder
-        .addStatement("return result")
-        .build();
-  }
-
-  private MethodSpec generateGetter(AttributeInfo data) {
-    return MethodSpec.methodBuilder(data.getName())
-        .addModifiers(Modifier.PUBLIC)
-        .returns(data.getType())
-        .addAnnotations(data.getGetterAnnotations())
-        .addStatement("return $L", data.getName())
-        .build();
-  }
-
-  private MethodSpec generateSetter(ClassToGenerateInfo helperClass, AttributeInfo data) {
-    String attributeName = data.getName();
-    Builder builder = MethodSpec.methodBuilder(attributeName)
-        .addModifiers(Modifier.PUBLIC)
-        .returns(helperClass.getParameterizedGeneratedName())
-        .addParameter(ParameterSpec.builder(data.getType(), attributeName)
-            .addAnnotations(data.getSetterAnnotations()).build())
-        .addStatement("this.$L = $L", attributeName, attributeName);
-
-    if (data.hasSuperSetterMethod()) {
-      builder.addStatement("super.$L($L)", attributeName, attributeName);
-    }
-
-    return builder
-        .addStatement("return this")
-        .build();
-  }
-
-  /**
-   * Include overrides of the setters on the base EpoxyModel class so that calling them returns the
-   * generated class type for use in chaining.
-   */
-  private List<MethodSpec> buildDefaultSetters(ClassToGenerateInfo helperClass) {
-    List<MethodSpec> result = new ArrayList<>();
-
-    result.add(MethodSpec.methodBuilder("id")
-        .addModifiers(Modifier.PUBLIC)
-        .returns(helperClass.getParameterizedGeneratedName())
-        .addAnnotation(Override.class)
-        .addParameter(long.class, "id")
-        .addStatement("super.id(id)")
-        .addStatement("return this")
-        .build());
-
-    result.add(MethodSpec.methodBuilder("layout")
-        .addModifiers(Modifier.PUBLIC)
-        .returns(helperClass.getParameterizedGeneratedName())
-        .addAnnotation(Override.class)
-        .addParameter(
-            ParameterSpec.builder(int.class, "layoutRes").addAnnotation(LayoutRes.class).build())
-        .addStatement("super.layout(layoutRes)")
-        .addStatement("return this")
-        .build());
-
-    result.add(MethodSpec.methodBuilder("show")
-        .addModifiers(Modifier.PUBLIC)
-        .returns(helperClass.getParameterizedGeneratedName())
-        .addAnnotation(Override.class)
-        .addStatement("super.show()")
-        .addStatement("return this")
-        .build());
-
-    result.add(MethodSpec.methodBuilder("show")
-        .addModifiers(Modifier.PUBLIC)
-        .returns(helperClass.getParameterizedGeneratedName())
-        .addParameter(boolean.class, "show")
-        .addAnnotation(Override.class)
-        .addStatement("super.show(show)")
-        .addStatement("return this")
-        .build());
-
-    result.add(MethodSpec.methodBuilder("hide")
-        .addModifiers(Modifier.PUBLIC)
-        .returns(helperClass.getParameterizedGeneratedName())
-        .addAnnotation(Override.class)
-        .addStatement("super.hide()")
-        .addStatement("return this")
-        .build());
-
-    return result;
-  }
-
-  private void writeError(Exception e) {
-    messager.printMessage(Diagnostic.Kind.ERROR, e.toString());
-  }
-
-  private void throwError(String msg, Object... args)
-      throws EpoxyProcessorException {
-    throw new EpoxyProcessorException(String.format(msg, args));
   }
 }

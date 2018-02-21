@@ -2,15 +2,14 @@
 package com.airbnb.epoxy;
 
 import android.support.annotation.IntDef;
-import android.support.v4.util.Pools;
+import android.support.annotation.Nullable;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.List;
+import java.util.ArrayList;
 
 /** Defines an operation that makes a change to the epoxy model list. */
 class UpdateOp {
-  private static final Pools.Pool<UpdateOp> UPDATE_OP_POOL = new Pools.SimplePool<>(10);
 
   @IntDef({ADD, REMOVE, UPDATE, MOVE})
   @Retention(RetentionPolicy.SOURCE)
@@ -26,31 +25,56 @@ class UpdateOp {
   int positionStart;
   /** Holds the target position if this is a MOVE */
   int itemCount;
+  ArrayList<EpoxyModel<?>> payloads;
 
   private UpdateOp() {
   }
 
-  static UpdateOp instance(@Type int type, int positionStart, int itemCount) {
-    UpdateOp op = UPDATE_OP_POOL.acquire();
-    if (op == null) {
-      op = new UpdateOp();
-    }
+  static UpdateOp instance(@Type int type, int positionStart, int itemCount,
+      @Nullable EpoxyModel<?> payload) {
+    UpdateOp op = new UpdateOp();
 
     op.type = type;
     op.positionStart = positionStart;
     op.itemCount = itemCount;
 
+    op.addPayload(payload);
+
     return op;
   }
 
-  static UpdateOp instance(@Type int type, int positionStart) {
-    return instance(type, positionStart, 1);
+  /** Returns the index one past the last item in the affected range. */
+  int positionEnd() {
+    return positionStart + itemCount;
   }
 
-  static void release(List<UpdateOp> diff) {
-    for (UpdateOp updateOp : diff) {
-      UPDATE_OP_POOL.release(updateOp);
+  boolean isAfter(int position) {
+    return position < positionStart;
+  }
+
+  boolean isBefore(int position) {
+    return position >= positionEnd();
+  }
+
+  boolean contains(int position) {
+    return position >= positionStart && position < positionEnd();
+  }
+
+  void addPayload(@Nullable EpoxyModel<?> payload) {
+    if (payload == null) {
+      return;
     }
+
+    if (payloads == null) {
+      // In most cases this won't be a batch update so we can expect just one payload
+      payloads = new ArrayList<>(1);
+    } else if (payloads.size() == 1) {
+      // There are multiple payloads, but we don't know how big the batch will end up being.
+      // To prevent resizing the list many times we bump it to a medium size
+      payloads.ensureCapacity(10);
+    }
+
+    payloads.add(payload);
   }
 
   @Override
