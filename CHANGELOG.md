@@ -1,3 +1,24 @@
+# 2.12.0 (April 18, 2018)
+
+- **Breaking** Several updates to the Paging Library integration were made (https://github.com/airbnb/epoxy/pull/421)
+    - The `PagingEpoxyController` class had the methods `setNumPagesToLoad` and `setPageSizeHint` removed
+    - Page hints are now taken from the `Config` object off of the PagedList. See the `setConfig` javadoc for information on how config values are used: https://github.com/airbnb/epoxy/blob/master/epoxy-paging/src/main/java/com/airbnb/epoxy/paging/PagingEpoxyController.java#L220
+    - Several tweaks were made to how the page size and prefetch distance affect model rebuilding. Take some time to make sure your config values make sense and produce good results for your use case
+    - A crash on empty list was fixed (https://github.com/airbnb/epoxy/issues/420)
+
+- **New** The [Paris](https://github.com/airbnb/paris) library is now officially supported to allow dynamically styling RecyclerView items though Epoxy models. See [the wiki](https://github.com/airbnb/epoxy/wiki/Paris-Integration-(Dynamic-Styling)) for more info.
+
+
+# 2.11.0 (April 7, 2018)
+
+- **Fix** Make databinding work with Android Studio 3.1 (https://github.com/airbnb/epoxy/pull/418)
+- Make `EpoxyController#isBuildingModels` public (https://github.com/airbnb/epoxy/pull/406
+
+
+# 2.10.0 (February 25, 2018)
+
+- **Improved** Allow the `Model_` class suffix for models generated via `@ModelView` to be customized (https://github.com/airbnb/epoxy/pull/402 Big thanks to geralt-encore!)
+
 # 2.9.0 (January 29, 2018)
 - **Improved** Global defaults for EpoxyController settings. Set duplicate filtering and exception handlers for all your controllers. (https://github.com/airbnb/epoxy/pull/394)
 - **Improved** Add `@NonNull` annotations in EpoxyModel for better Kotlin interop

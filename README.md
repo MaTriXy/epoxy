@@ -19,9 +19,9 @@ Gradle is the only supported build configuration, so just add the dependency to 
 
 ```groovy
 dependencies {
-  compile 'com.airbnb.android:epoxy:2.9.0'
+  compile 'com.airbnb.android:epoxy:2.12.0'
   // Add the annotation processor if you are using Epoxy's annotations (recommended)
-  annotationProcessor 'com.airbnb.android:epoxy-processor:2.9.0'
+  annotationProcessor 'com.airbnb.android:epoxy-processor:2.12.0'
 }
 ```
 
@@ -212,7 +212,7 @@ class PhotoController : Typed2EpoxyController<List<Photo>, Boolean>() {
 Get the backing adapter off the EpoxyController to set up your RecyclerView:
 ```java
 MyController controller = new MyController();
-recyclerView.setAdapter(controller);
+recyclerView.setAdapter(controller.getAdapter());
 
 // Request a model build whenever your data changes
 controller.requestModelBuild();

@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
   compileSdkVersion rootProject.COMPILE_SDK_VERSION
-  buildToolsVersion rootProject.ANDROID_BUILD_TOOLS_VERSION
 
   // For java 8 lambdas
   compileOptions {
@@ -44,8 +43,8 @@ dependencies {
   compile project(':epoxy-adapter')
   annotationProcessor project(':epoxy-processor')
 
-//  compile "com.airbnb.android:paris:0.2.0"
-//  annotationProcessor "com.airbnb.android:paris-processor:0.2.0"
+  compile rootProject.deps.paris
+  annotationProcessor rootProject.deps.parisProcessor
 
   // Dependencies for the optional litho integration
   compile project(':epoxy-litho')

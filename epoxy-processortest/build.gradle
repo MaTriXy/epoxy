@@ -7,7 +7,6 @@ apply plugin: 'kotlin-kapt'
 
 android {
   compileSdkVersion rootProject.COMPILE_SDK_VERSION
-  buildToolsVersion rootProject.ANDROID_BUILD_TOOLS_VERSION
 
   defaultConfig {
     minSdkVersion rootProject.MIN_SDK_VERSION
@@ -28,6 +27,11 @@ dependencies {
   kapt project(':epoxy-processor')
   // Need to include the processor directly since we create an instance of it in code for testing
   testCompile project(':epoxy-processor')
+
+  compile rootProject.deps.paris
+  kapt rootProject.deps.parisProcessor
+  // Need to include the processor directly since we create an instance of it in code for testing
+  testCompile rootProject.deps.parisProcessor
 
   kapt rootProject.deps.dataBindingCompiler
   kapt rootProject.deps.autoValue

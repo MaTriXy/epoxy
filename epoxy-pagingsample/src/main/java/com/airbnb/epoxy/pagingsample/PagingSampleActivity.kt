@@ -8,15 +8,16 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.AppCompatTextView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.widget.TextView
 import com.airbnb.epoxy.ModelView
 import com.airbnb.epoxy.TextProp
 import com.airbnb.epoxy.paging.PagingEpoxyController
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.coroutines.experimental.bg
+import java.lang.RuntimeException
 import java.util.concurrent.Executor
 
 class PagingSampleActivity : AppCompatActivity() {
@@ -38,21 +39,20 @@ class PagingSampleActivity : AppCompatActivity() {
         async(UI) {
             val pagedList = bg {
                 db.userDao().delete(db.userDao().all)
-                for (i in 1..3000) {
-                    db.userDao().insertAll(User(i))
-                }
+                (1..3000)
+                        .map { User(it) }
+                        .let { db.userDao().insertAll(*it.toTypedArray()) }
 
-                return@bg PagedList.Builder<Int, User>(
+                PagedList.Builder<Int, User>(
                         db.userDao().dataSource.create(),
                         PagedList.Config.Builder().run {
                             setEnablePlaceholders(false)
-                            setPageSize(40)
-                            setInitialLoadSizeHint(80)
-                            setPrefetchDistance(50)
+                            setPageSize(150)
+                            setPrefetchDistance(30)
                             build()
                         }).run {
-                    setMainThreadExecutor(UiThreadExecutor)
-                    setBackgroundThreadExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+                    setNotifyExecutor(UiThreadExecutor)
+                    setFetchExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
                     build()
                 }
             }
@@ -60,15 +60,21 @@ class PagingSampleActivity : AppCompatActivity() {
             pagingController.setList(pagedList.await())
         }
 
+        pagingController.setList(emptyList())
     }
 }
 
 class TestController : PagingEpoxyController<User>() {
     init {
-        setDebugLoggingEnabled(true)
+        isDebugLoggingEnabled = true
     }
 
     override fun buildModels(users: List<User>) {
+        pagingView {
+            id("header")
+            name("Header")
+        }
+
         users.forEach {
             pagingView {
                 id(it.uid)
@@ -77,10 +83,14 @@ class TestController : PagingEpoxyController<User>() {
         }
     }
 
+    override fun onExceptionSwallowed(exception: RuntimeException) {
+        throw exception
+    }
+
 }
 
 @ModelView(autoLayout = ModelView.Size.MATCH_WIDTH_WRAP_HEIGHT)
-class PagingView(context: Context) : TextView(context) {
+class PagingView(context: Context) : AppCompatTextView(context) {
 
     @TextProp
     fun name(name: CharSequence) {
@@ -90,9 +100,9 @@ class PagingView(context: Context) : TextView(context) {
 }
 
 object UiThreadExecutor : Executor {
-    private val mHandler = Handler(Looper.getMainLooper())
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun execute(command: Runnable) {
-        mHandler.post(command)
+        handler.post(command)
     }
 }
