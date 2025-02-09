@@ -1,6 +1,7 @@
 package com.airbnb.epoxy;
 
-import android.support.annotation.Nullable;
+import android.os.Handler;
+import androidx.annotation.Nullable;
 
 /**
  * This is a wrapper around {@link com.airbnb.epoxy.EpoxyController} to simplify how data is
@@ -19,6 +20,13 @@ import android.support.annotation.Nullable;
 public abstract class TypedEpoxyController<T> extends EpoxyController {
   private T currentData;
   private boolean allowModelBuildRequests;
+
+  public TypedEpoxyController() {
+  }
+
+  public TypedEpoxyController(Handler modelBuildingHandler, Handler diffingHandler) {
+    super(modelBuildingHandler, diffingHandler);
+  }
 
   public final void setData(T data) {
     currentData = data;

@@ -1,7 +1,5 @@
 package com.airbnb.epoxy;
 
-import android.support.v7.widget.RecyclerView.AdapterDataObserver;
-
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -11,10 +9,13 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
@@ -22,14 +23,13 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@Config(sdk = 21, manifest = TestRunner.MANIFEST_PATH)
-@RunWith(TestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 public class EpoxyAdapterTest {
 
   @Rule public ExpectedException thrown = ExpectedException.none();
   private final TestAdapter testAdapter = new TestAdapter();
   private final TestObserver differObserver = new TestObserver();
-  @Mock AdapterDataObserver observer;
+  @Mock RecyclerView.AdapterDataObserver observer;
 
   @Before
   public void setup() {

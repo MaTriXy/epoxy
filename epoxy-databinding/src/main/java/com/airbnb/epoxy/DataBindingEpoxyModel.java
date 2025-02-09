@@ -1,15 +1,17 @@
 package com.airbnb.epoxy;
 
-import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 
 import com.airbnb.epoxy.DataBindingEpoxyModel.DataBindingHolder;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 
 /**
  * A version of {@link com.airbnb.epoxy.EpoxyModel} that can be used with databinding. The layout
@@ -35,7 +37,7 @@ import java.util.List;
 public abstract class DataBindingEpoxyModel extends EpoxyModelWithHolder<DataBindingHolder> {
 
   @Override
-  protected View buildView(@NonNull ViewGroup parent) {
+  public View buildView(@NonNull ViewGroup parent) {
     LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
     ViewDataBinding binding = DataBindingUtil.inflate(layoutInflater, getViewType(), parent, false);
     View view = binding.getRoot();
@@ -94,7 +96,7 @@ public abstract class DataBindingEpoxyModel extends EpoxyModelWithHolder<DataBin
   }
 
   @Override
-  protected final DataBindingHolder createNewHolder() {
+  protected final DataBindingHolder createNewHolder(@NonNull ViewParent parent) {
     return new DataBindingHolder();
   }
 
@@ -106,7 +108,7 @@ public abstract class DataBindingEpoxyModel extends EpoxyModelWithHolder<DataBin
     }
 
     @Override
-    protected void bindView(View itemView) {
+    protected void bindView(@NonNull View itemView) {
       dataBinding = (ViewDataBinding) itemView.getTag();
     }
   }

@@ -1,15 +1,16 @@
 package com.airbnb.epoxy;
 
 import android.graphics.Canvas;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import com.airbnb.viewmodeladapter.R;
 
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
+
 /**
- * A wrapper around {@link android.support.v7.widget.helper.ItemTouchHelper.Callback} to enable
+ * A wrapper around {@link androidx.recyclerview.widget.ItemTouchHelper.Callback} to enable
  * easier touch support when working with Epoxy models.
  * <p>
  * For simplicity you can use {@link EpoxyTouchHelper} to set up touch handling via this class for
@@ -205,11 +206,15 @@ public abstract class EpoxyModelTouchCallback<T extends EpoxyModel>
       float dX, float dY, int actionState, boolean isCurrentlyActive) {
     super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
 
-    if (holderBeingSwiped == null) {
+    EpoxyModel<?> model;
+    // It’s possible for a touch helper to still draw if the item is being removed, which means it
+    // has technically be unbound by that point. getModel will throw an exception in this case.
+    try {
+      model = viewHolder.getModel();
+    } catch (IllegalStateException ignored) {
       return;
     }
 
-    EpoxyModel<?> model = viewHolder.getModel();
     if (!isTouchableModel(model)) {
       throw new IllegalStateException(
           "A model was selected that is not a valid target: " + model.getClass());

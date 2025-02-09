@@ -1,12 +1,12 @@
 package com.airbnb.epoxy;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.PluralsRes;
-import android.support.annotation.StringRes;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.PluralsRes;
+import androidx.annotation.StringRes;
 import java.lang.CharSequence;
 import java.lang.IllegalArgumentException;
 import java.lang.IllegalStateException;
@@ -19,7 +19,8 @@ import java.util.BitSet;
 import javax.annotation.Nullable;
 
 /**
- * Generated file. Do not modify! */
+ * Generated file. Do not modify!
+ */
 public class TestFieldPropChildViewModel_ extends EpoxyModel<TestFieldPropChildView> implements GeneratedModel<TestFieldPropChildView>, TestFieldPropChildViewModelBuilder {
   private final BitSet assignedAttributes_epoxyGeneratedModel = new BitSet(2);
 
@@ -27,12 +28,15 @@ public class TestFieldPropChildViewModel_ extends EpoxyModel<TestFieldPropChildV
 
   private OnModelUnboundListener<TestFieldPropChildViewModel_, TestFieldPropChildView> onModelUnboundListener_epoxyGeneratedModel;
 
-  /**
-   * Bitset index: 0 */
-  private StringAttributeData textValue_StringAttributeData =  new StringAttributeData();
+  private OnModelVisibilityStateChangedListener<TestFieldPropChildViewModel_, TestFieldPropChildView> onModelVisibilityStateChangedListener_epoxyGeneratedModel;
+
+  private OnModelVisibilityChangedListener<TestFieldPropChildViewModel_, TestFieldPropChildView> onModelVisibilityChangedListener_epoxyGeneratedModel;
 
   /**
-   * Bitset index: 1 */
+   * Bitset index: 0
+   */
+  private StringAttributeData textValue_StringAttributeData =  new StringAttributeData();
+
   @Nullable
   private View.OnClickListener value_OnClickListener = (View.OnClickListener) null;
 
@@ -51,7 +55,7 @@ public class TestFieldPropChildViewModel_ extends EpoxyModel<TestFieldPropChildV
   }
 
   @Override
-  protected TestFieldPropChildView buildView(ViewGroup parent) {
+  public TestFieldPropChildView buildView(ViewGroup parent) {
     TestFieldPropChildView v = new TestFieldPropChildView(parent.getContext());
     v.setLayoutParams(new ViewGroup.MarginLayoutParams(ViewGroup.MarginLayoutParams.WRAP_CONTENT, ViewGroup.MarginLayoutParams.WRAP_CONTENT));
     return v;
@@ -103,8 +107,10 @@ public class TestFieldPropChildViewModel_ extends EpoxyModel<TestFieldPropChildV
    * The listener will contribute to this model's hashCode state per the {@link
    * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
    * <p>
-   * You may clear the listener by setting a null value, or by calling {@link #reset()} */
-  public TestFieldPropChildViewModel_ onBind(OnModelBoundListener<TestFieldPropChildViewModel_, TestFieldPropChildView> listener) {
+   * You may clear the listener by setting a null value, or by calling {@link #reset()}
+   */
+  public TestFieldPropChildViewModel_ onBind(
+      OnModelBoundListener<TestFieldPropChildViewModel_, TestFieldPropChildView> listener) {
     onMutation();
     this.onModelBoundListener_epoxyGeneratedModel = listener;
     return this;
@@ -125,10 +131,55 @@ public class TestFieldPropChildViewModel_ extends EpoxyModel<TestFieldPropChildV
    * The listener will contribute to this model's hashCode state per the {@link
    * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
    * <p>
-   * You may clear the listener by setting a null value, or by calling {@link #reset()} */
-  public TestFieldPropChildViewModel_ onUnbind(OnModelUnboundListener<TestFieldPropChildViewModel_, TestFieldPropChildView> listener) {
+   * You may clear the listener by setting a null value, or by calling {@link #reset()}
+   */
+  public TestFieldPropChildViewModel_ onUnbind(
+      OnModelUnboundListener<TestFieldPropChildViewModel_, TestFieldPropChildView> listener) {
     onMutation();
     this.onModelUnboundListener_epoxyGeneratedModel = listener;
+    return this;
+  }
+
+  @Override
+  public void onVisibilityStateChanged(int visibilityState, final TestFieldPropChildView object) {
+    if (onModelVisibilityStateChangedListener_epoxyGeneratedModel != null) {
+      onModelVisibilityStateChangedListener_epoxyGeneratedModel.onVisibilityStateChanged(this, object, visibilityState);
+    }
+    super.onVisibilityStateChanged(visibilityState, object);
+  }
+
+  /**
+   * Register a listener that will be called when this model visibility state has changed.
+   * <p>
+   * The listener will contribute to this model's hashCode state per the {@link
+   * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
+   */
+  public TestFieldPropChildViewModel_ onVisibilityStateChanged(
+      OnModelVisibilityStateChangedListener<TestFieldPropChildViewModel_, TestFieldPropChildView> listener) {
+    onMutation();
+    this.onModelVisibilityStateChangedListener_epoxyGeneratedModel = listener;
+    return this;
+  }
+
+  @Override
+  public void onVisibilityChanged(float percentVisibleHeight, float percentVisibleWidth,
+      int visibleHeight, int visibleWidth, final TestFieldPropChildView object) {
+    if (onModelVisibilityChangedListener_epoxyGeneratedModel != null) {
+      onModelVisibilityChangedListener_epoxyGeneratedModel.onVisibilityChanged(this, object, percentVisibleHeight, percentVisibleWidth, visibleHeight, visibleWidth);
+    }
+    super.onVisibilityChanged(percentVisibleHeight, percentVisibleWidth, visibleHeight, visibleWidth, object);
+  }
+
+  /**
+   * Register a listener that will be called when this model visibility has changed.
+   * <p>
+   * The listener will contribute to this model's hashCode state per the {@link
+   * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
+   */
+  public TestFieldPropChildViewModel_ onVisibilityChanged(
+      OnModelVisibilityChangedListener<TestFieldPropChildViewModel_, TestFieldPropChildView> listener) {
+    onMutation();
+    this.onModelVisibilityChangedListener_epoxyGeneratedModel = listener;
     return this;
   }
 
@@ -195,16 +246,16 @@ public class TestFieldPropChildViewModel_ extends EpoxyModel<TestFieldPropChildV
   }
 
   /**
-   * Set a click listener that will provide the parent view, model, and adapter position of the clicked view. This will clear the normal View.OnClickListener if one has been set */
-  @Nullable
-  public TestFieldPropChildViewModel_ value(final OnModelClickListener<TestFieldPropChildViewModel_, TestFieldPropChildView> value) {
-    assignedAttributes_epoxyGeneratedModel.set(1);
+   * Set a click listener that will provide the parent view, model, and adapter position of the clicked view. This will clear the normal View.OnClickListener if one has been set
+   */
+  public TestFieldPropChildViewModel_ value(
+      @Nullable final OnModelClickListener<TestFieldPropChildViewModel_, TestFieldPropChildView> value) {
     onMutation();
     if (value == null) {
       this.value_OnClickListener = null;
     }
     else {
-      this.value_OnClickListener = new WrappedEpoxyModelClickListener(value);
+      this.value_OnClickListener = new WrappedEpoxyModelClickListener<>(value);
     }
     return this;
   }
@@ -212,10 +263,9 @@ public class TestFieldPropChildViewModel_ extends EpoxyModel<TestFieldPropChildV
   /**
    * <i>Optional</i>: Default value is (View.OnClickListener) null
    *
-   * @see TestFieldPropChildView#value
+   * @see TestFieldPropParentView#value
    */
   public TestFieldPropChildViewModel_ value(@Nullable View.OnClickListener value) {
-    assignedAttributes_epoxyGeneratedModel.set(1);
     onMutation();
     this.value_OnClickListener = value;
     return this;
@@ -233,8 +283,8 @@ public class TestFieldPropChildViewModel_ extends EpoxyModel<TestFieldPropChildV
   }
 
   @Override
-  public TestFieldPropChildViewModel_ id(@NonNull Number... arg0) {
-    super.id(arg0);
+  public TestFieldPropChildViewModel_ id(@androidx.annotation.Nullable Number... ids) {
+    super.id(ids);
     return this;
   }
 
@@ -245,32 +295,33 @@ public class TestFieldPropChildViewModel_ extends EpoxyModel<TestFieldPropChildV
   }
 
   @Override
-  public TestFieldPropChildViewModel_ id(@NonNull CharSequence arg0) {
-    super.id(arg0);
+  public TestFieldPropChildViewModel_ id(@androidx.annotation.Nullable CharSequence key) {
+    super.id(key);
     return this;
   }
 
   @Override
-  public TestFieldPropChildViewModel_ id(@NonNull CharSequence arg0,
-      @NonNull CharSequence... arg1) {
-    super.id(arg0, arg1);
+  public TestFieldPropChildViewModel_ id(@androidx.annotation.Nullable CharSequence key,
+      @androidx.annotation.Nullable CharSequence... otherKeys) {
+    super.id(key, otherKeys);
     return this;
   }
 
   @Override
-  public TestFieldPropChildViewModel_ id(@NonNull CharSequence arg0, long arg1) {
-    super.id(arg0, arg1);
+  public TestFieldPropChildViewModel_ id(@androidx.annotation.Nullable CharSequence key, long id) {
+    super.id(key, id);
     return this;
   }
 
   @Override
-  public TestFieldPropChildViewModel_ layout(@LayoutRes int arg0) {
+  public TestFieldPropChildViewModel_ layout(@LayoutRes int layoutRes) {
     throw new UnsupportedOperationException("Layout resources are unsupported with programmatic views.");
   }
 
   @Override
-  public TestFieldPropChildViewModel_ spanSizeOverride(@android.support.annotation.Nullable EpoxyModel.SpanSizeOverrideCallback arg0) {
-    super.spanSizeOverride(arg0);
+  public TestFieldPropChildViewModel_ spanSizeOverride(
+      @androidx.annotation.Nullable EpoxyModel.SpanSizeOverrideCallback spanSizeCallback) {
+    super.spanSizeOverride(spanSizeCallback);
     return this;
   }
 
@@ -302,6 +353,8 @@ public class TestFieldPropChildViewModel_ extends EpoxyModel<TestFieldPropChildV
   public TestFieldPropChildViewModel_ reset() {
     onModelBoundListener_epoxyGeneratedModel = null;
     onModelUnboundListener_epoxyGeneratedModel = null;
+    onModelVisibilityStateChangedListener_epoxyGeneratedModel = null;
+    onModelVisibilityChangedListener_epoxyGeneratedModel = null;
     assignedAttributes_epoxyGeneratedModel.clear();
     this.textValue_StringAttributeData =  new StringAttributeData();
     this.value_OnClickListener = (View.OnClickListener) null;
@@ -327,6 +380,12 @@ public class TestFieldPropChildViewModel_ extends EpoxyModel<TestFieldPropChildV
     if (((onModelUnboundListener_epoxyGeneratedModel == null) != (that.onModelUnboundListener_epoxyGeneratedModel == null))) {
       return false;
     }
+    if (((onModelVisibilityStateChangedListener_epoxyGeneratedModel == null) != (that.onModelVisibilityStateChangedListener_epoxyGeneratedModel == null))) {
+      return false;
+    }
+    if (((onModelVisibilityChangedListener_epoxyGeneratedModel == null) != (that.onModelVisibilityChangedListener_epoxyGeneratedModel == null))) {
+      return false;
+    }
     if ((textValue_StringAttributeData != null ? !textValue_StringAttributeData.equals(that.textValue_StringAttributeData) : that.textValue_StringAttributeData != null)) {
       return false;
     }
@@ -338,12 +397,14 @@ public class TestFieldPropChildViewModel_ extends EpoxyModel<TestFieldPropChildV
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (onModelBoundListener_epoxyGeneratedModel != null ? 1 : 0);
-    result = 31 * result + (onModelUnboundListener_epoxyGeneratedModel != null ? 1 : 0);
-    result = 31 * result + (textValue_StringAttributeData != null ? textValue_StringAttributeData.hashCode() : 0);
-    result = 31 * result + (value_OnClickListener != null ? value_OnClickListener.hashCode() : 0);
-    return result;
+    int _result = super.hashCode();
+    _result = 31 * _result + (onModelBoundListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelUnboundListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelVisibilityStateChangedListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelVisibilityChangedListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (textValue_StringAttributeData != null ? textValue_StringAttributeData.hashCode() : 0);
+    _result = 31 * _result + (value_OnClickListener != null ? value_OnClickListener.hashCode() : 0);
+    return _result;
   }
 
   @Override

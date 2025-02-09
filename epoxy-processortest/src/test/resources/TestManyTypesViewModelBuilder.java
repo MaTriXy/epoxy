@@ -1,13 +1,13 @@
 package com.airbnb.epoxy;
 
-import android.support.annotation.Dimension;
-import android.support.annotation.IntRange;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.PluralsRes;
-import android.support.annotation.StringRes;
 import android.view.View;
+import androidx.annotation.Dimension;
+import androidx.annotation.IntRange;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.PluralsRes;
+import androidx.annotation.StringRes;
 import java.lang.Boolean;
 import java.lang.CharSequence;
 import java.lang.Integer;
@@ -15,29 +15,48 @@ import java.lang.Number;
 import java.lang.Object;
 import java.lang.String;
 import java.util.List;
+import java.util.Map;
+import kotlin.jvm.functions.Function3;
 
+@EpoxyBuildScope
 public interface TestManyTypesViewModelBuilder {
-  TestManyTypesViewModelBuilder onBind(OnModelBoundListener<TestManyTypesViewModel_, TestManyTypesView> listener);
+  TestManyTypesViewModelBuilder onBind(
+      OnModelBoundListener<TestManyTypesViewModel_, TestManyTypesView> listener);
 
-  TestManyTypesViewModelBuilder onUnbind(OnModelUnboundListener<TestManyTypesViewModel_, TestManyTypesView> listener);
+  TestManyTypesViewModelBuilder onUnbind(
+      OnModelUnboundListener<TestManyTypesViewModel_, TestManyTypesView> listener);
+
+  TestManyTypesViewModelBuilder onVisibilityStateChanged(
+      OnModelVisibilityStateChangedListener<TestManyTypesViewModel_, TestManyTypesView> listener);
+
+  TestManyTypesViewModelBuilder onVisibilityChanged(
+      OnModelVisibilityChangedListener<TestManyTypesViewModel_, TestManyTypesView> listener);
 
   TestManyTypesViewModelBuilder stringValue(@NonNull String stringValue);
 
   TestManyTypesViewModelBuilder nullableStringValue(@Nullable String nullableStringValue);
 
+  TestManyTypesViewModelBuilder function(
+      @NonNull Function3<Integer, Integer, Integer, Integer> function);
+
   TestManyTypesViewModelBuilder intValue(int intValue);
 
   TestManyTypesViewModelBuilder intValueWithAnnotation(@StringRes int intValueWithAnnotation);
 
-  TestManyTypesViewModelBuilder intValueWithRangeAnnotation(@IntRange(from = 0, to = 200) int intValueWithRangeAnnotation);
+  TestManyTypesViewModelBuilder intValueWithRangeAnnotation(
+      @IntRange(from = 0, to = 200) int intValueWithRangeAnnotation);
 
-  TestManyTypesViewModelBuilder intValueWithDimenTypeAnnotation(@Dimension(unit = 0) int intValueWithDimenTypeAnnotation);
+  TestManyTypesViewModelBuilder intValueWithDimenTypeAnnotation(
+      @Dimension(unit = 0) int intValueWithDimenTypeAnnotation);
 
-  TestManyTypesViewModelBuilder intWithMultipleAnnotations(@IntRange(from = 0, to = 200) @Dimension(unit = 0) int intWithMultipleAnnotations);
+  TestManyTypesViewModelBuilder intWithMultipleAnnotations(
+      @IntRange(from = 0, to = 200) @Dimension(unit = 0) int intWithMultipleAnnotations);
 
   TestManyTypesViewModelBuilder integerValue(@NonNull Integer integerValue);
 
   TestManyTypesViewModelBuilder boolValue(boolean boolValue);
+
+  TestManyTypesViewModelBuilder models(@NonNull List<? extends EpoxyModel<?>> models);
 
   TestManyTypesViewModelBuilder booleanValue(@NonNull Boolean booleanValue);
 
@@ -45,7 +64,10 @@ public interface TestManyTypesViewModelBuilder {
 
   TestManyTypesViewModelBuilder listValue(@NonNull List<String> listValue);
 
-  TestManyTypesViewModelBuilder clickListener(final OnModelClickListener<TestManyTypesViewModel_, TestManyTypesView> clickListener);
+  TestManyTypesViewModelBuilder mapValue(@NonNull Map<Integer, Integer> mapValue);
+
+  TestManyTypesViewModelBuilder clickListener(
+      @NonNull final OnModelClickListener<TestManyTypesViewModel_, TestManyTypesView> clickListener);
 
   TestManyTypesViewModelBuilder clickListener(@NonNull View.OnClickListener clickListener);
 
@@ -60,17 +82,18 @@ public interface TestManyTypesViewModelBuilder {
 
   TestManyTypesViewModelBuilder id(long id);
 
-  TestManyTypesViewModelBuilder id(@NonNull Number... arg0);
+  TestManyTypesViewModelBuilder id(@Nullable Number... ids);
 
   TestManyTypesViewModelBuilder id(long id1, long id2);
 
-  TestManyTypesViewModelBuilder id(@NonNull CharSequence arg0);
+  TestManyTypesViewModelBuilder id(@Nullable CharSequence key);
 
-  TestManyTypesViewModelBuilder id(@NonNull CharSequence arg0, @NonNull CharSequence... arg1);
+  TestManyTypesViewModelBuilder id(@Nullable CharSequence key, @Nullable CharSequence... otherKeys);
 
-  TestManyTypesViewModelBuilder id(@NonNull CharSequence arg0, long arg1);
+  TestManyTypesViewModelBuilder id(@Nullable CharSequence key, long id);
 
-  TestManyTypesViewModelBuilder layout(@LayoutRes int arg0);
+  TestManyTypesViewModelBuilder layout(@LayoutRes int layoutRes);
 
-  TestManyTypesViewModelBuilder spanSizeOverride(@Nullable EpoxyModel.SpanSizeOverrideCallback arg0);
+  TestManyTypesViewModelBuilder spanSizeOverride(
+      @Nullable EpoxyModel.SpanSizeOverrideCallback spanSizeCallback);
 }

@@ -1,6 +1,5 @@
 package com.airbnb.epoxy;
 
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -8,8 +7,10 @@ import android.widget.FrameLayout;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
+import org.robolectric.RobolectricTestRunner;
+
+import androidx.annotation.NonNull;
+import androidx.test.core.app.ApplicationProvider;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -17,8 +18,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-@Config(sdk = 21, manifest = TestRunner.MANIFEST_PATH)
-@RunWith(TestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 public class ViewTypeManagerIntegrationTest {
 
   @Before
@@ -28,8 +28,8 @@ public class ViewTypeManagerIntegrationTest {
 
   static class TestModel extends EpoxyModelWithView<View> {
     @Override
-    protected View buildView(@NonNull ViewGroup parent) {
-      return new FrameLayout(RuntimeEnvironment.application);
+    public View buildView(@NonNull ViewGroup parent) {
+      return new FrameLayout(ApplicationProvider.getApplicationContext());
     }
   }
 

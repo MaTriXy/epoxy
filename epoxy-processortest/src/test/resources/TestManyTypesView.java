@@ -1,15 +1,20 @@
 package com.airbnb.epoxy;
 
 import android.content.Context;
-import android.support.annotation.Dimension;
-import android.support.annotation.IntRange;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
+import androidx.annotation.Dimension;
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import kotlin.jvm.functions.Function3;
+
 import android.view.View;
 
 import com.airbnb.epoxy.ModelProp.Option;
+import com.airbnb.epoxy.EpoxyModel;
 
 import java.util.List;
+import java.util.Map;
 
 @ModelView(defaultLayout = 1)
 public class TestManyTypesView extends View {
@@ -27,6 +32,11 @@ public class TestManyTypesView extends View {
 
   @ModelProp
   void setNullableStringValue(@Nullable String value) {
+
+  }
+
+  @ModelProp(Option.DoNotHash)
+  void setFunction(Function3<Integer, Integer, Integer, Integer> funct) {
 
   }
 
@@ -66,6 +76,11 @@ public class TestManyTypesView extends View {
   }
 
   @ModelProp
+  void setModels(List<? extends EpoxyModel<?>> models) {
+
+  }
+
+  @ModelProp
   public void setBooleanValue(Boolean value) {
 
   }
@@ -77,6 +92,11 @@ public class TestManyTypesView extends View {
 
   @ModelProp
   public void setListValue(List<String> value) {
+
+  }
+
+  @ModelProp
+  public void setMapValue(Map<Integer, Integer> value) {
 
   }
 

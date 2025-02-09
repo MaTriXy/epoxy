@@ -1,19 +1,29 @@
 package com.airbnb.epoxy;
 
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.airbnb.epoxy.EpoxyController.ModelInterceptorCallback;
+import com.airbnb.epoxy.VisibilityState.Visibility;
 
 import java.util.List;
 
+import androidx.annotation.FloatRange;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.Px;
+
+import static com.airbnb.epoxy.IdUtils.hashLong64Bit;
+import static com.airbnb.epoxy.IdUtils.hashString64Bit;
+
 /**
  * Helper to bind data to a view using a builder style. The parameterized type should extend
- * Android's View.
+ * Android's View or EpoxyHolder.
+ *
+ * @see EpoxyModelWithHolder
+ * @see EpoxyModelWithView
  */
 public abstract class EpoxyModel<T> {
 
@@ -46,7 +56,7 @@ public abstract class EpoxyModel<T> {
   /**
    * Models are staged when they are changed. This allows them to be automatically added when they
    * are done being changed (eg the next model is changed/added or buildModels finishes). It is only
-   * allowed for AutoModels, and only if implicity adding is enabled.
+   * allowed for AutoModels, and only if implicit adding is enabled.
    */
   EpoxyController controllerToStageTo;
   private boolean currentlyInInterceptors;
@@ -73,7 +83,7 @@ public abstract class EpoxyModel<T> {
    * <p>
    * If this returns 0 Epoxy will assign a unique view type for this model at run time.
    *
-   * @see android.support.v7.widget.RecyclerView.Adapter#getItemViewType(int)
+   * @see androidx.recyclerview.widget.RecyclerView.Adapter#getItemViewType(int)
    */
   protected int getViewType() {
     return getLayout();
@@ -83,8 +93,45 @@ public abstract class EpoxyModel<T> {
    * Create and return a new instance of a view for this model. By default a view is created by
    * inflating the layout resource.
    */
-  protected View buildView(@NonNull ViewGroup parent) {
+  public View buildView(@NonNull ViewGroup parent) {
     return LayoutInflater.from(parent.getContext()).inflate(getLayout(), parent, false);
+  }
+
+  /**
+   * Hook that is called before {@link #bind(Object)}. This is similar to
+   * {@link GeneratedModel#handlePreBind(EpoxyViewHolder, Object, int)}, but is intended for
+   * subclasses of EpoxyModel to hook into rather than for generated code to hook into.
+   * Overriding preBind is useful to capture state before the view changes, e.g. for animations.
+   *
+   * @param previouslyBoundModel This is a model with the same id that was previously bound. You can
+   *                             compare this previous model with the current one to see exactly
+   *                             what changed.
+   *                             <p>
+   *                             This model and the previously bound model are guaranteed to have
+   *                             the same id, but will not necessarily be of the same type depending
+   *                             on your implementation of {@link EpoxyController#buildModels()}.
+   *                             With common usage patterns of Epoxy they should be the same type,
+   *                             and will only differ if you are using different model classes with
+   *                             the same id.
+   *                             <p>
+   *                             Comparing the newly bound model with the previous model allows you
+   *                             to be more intelligent when binding your view. This may help you
+   *                             optimize view binding, or make it easier to work with animations.
+   *                             <p>
+   *                             If the new model and the previous model have the same view type
+   *                             (given by {@link EpoxyModel#getViewType()}), and if you are using
+   *                             the default ReyclerView item animator, the same view will be
+   *                             reused. This means that you only need to update the view to reflect
+   *                             the data that changed. If you are using a custom item animator then
+   *                             the view will be the same if the animator returns true in
+   *                             canReuseUpdatedViewHolder.
+   *                             <p>
+   *                             This previously bound model is taken as a payload from the diffing
+   *                             process, and follows the same general conditions for all
+   *                             recyclerview change payloads.
+   */
+  public void preBind(@NonNull T view, @Nullable EpoxyModel<?> previouslyBoundModel) {
+
   }
 
   /**
@@ -155,6 +202,28 @@ public abstract class EpoxyModel<T> {
   public void unbind(@NonNull T view) {
   }
 
+  /**
+   * TODO link to the wiki
+   *
+   * @see OnVisibilityStateChanged annotation
+   */
+  public void onVisibilityStateChanged(@Visibility int visibilityState, @NonNull T view) {
+  }
+
+  /**
+   * TODO link to the wiki
+   *
+   * @see OnVisibilityChanged annotation
+   */
+  public void onVisibilityChanged(
+      @FloatRange(from = 0.0f, to = 100.0f) float percentVisibleHeight,
+      @FloatRange(from = 0.0f, to = 100.0f) float percentVisibleWidth,
+      @Px int visibleHeight,
+      @Px int visibleWidth,
+      @NonNull T view
+  ) {
+  }
+
   public long id() {
     return id;
   }
@@ -181,10 +250,12 @@ public abstract class EpoxyModel<T> {
    * <p>
    * This hashes the numbers, so there is a tiny risk of collision with other ids.
    */
-  public EpoxyModel<T> id(@NonNull Number... ids) {
+  public EpoxyModel<T> id(@Nullable Number... ids) {
     long result = 0;
-    for (Number id : ids) {
-      result = 31 * result + hashLong64Bit(id.hashCode());
+    if (ids != null) {
+      for (@Nullable Number id : ids) {
+        result = 31 * result + hashLong64Bit(id == null ? 0 : id.hashCode());
+      }
     }
     return id(result);
   }
@@ -211,9 +282,9 @@ public abstract class EpoxyModel<T> {
    * several hundred models in the adapter, there would be roughly 1 in 100 trillion chance of a
    * collision. (http://preshing.com/20110504/hash-collision-probabilities/)
    *
-   * @see EpoxyModel#hashString64Bit(CharSequence)
+   * @see IdUtils#hashString64Bit(CharSequence)
    */
-  public EpoxyModel<T> id(@NonNull CharSequence key) {
+  public EpoxyModel<T> id(@Nullable CharSequence key) {
     id(hashString64Bit(key));
     return this;
   }
@@ -223,10 +294,12 @@ public abstract class EpoxyModel<T> {
    * <p>
    * Similar to {@link #id(CharSequence)}, but with additional strings.
    */
-  public EpoxyModel<T> id(@NonNull CharSequence key, @NonNull CharSequence... otherKeys) {
+  public EpoxyModel<T> id(@Nullable CharSequence key, @Nullable CharSequence... otherKeys) {
     long result = hashString64Bit(key);
-    for (CharSequence otherKey : otherKeys) {
-      result = 31 * result + hashString64Bit(otherKey);
+    if (otherKeys != null) {
+      for (CharSequence otherKey : otherKeys) {
+        result = 31 * result + hashString64Bit(otherKey);
+      }
     }
     return id(result);
   }
@@ -240,48 +313,14 @@ public abstract class EpoxyModel<T> {
    * several hundred models in the adapter, there would be roughly 1 in 100 trillion chance of a
    * collision. (http://preshing.com/20110504/hash-collision-probabilities/)
    *
-   * @see EpoxyModel#hashString64Bit(CharSequence)
-   * @see EpoxyModel#hashLong64Bit(long)
+   * @see IdUtils#hashString64Bit(CharSequence)
+   * @see IdUtils#hashLong64Bit(long)
    */
-  public EpoxyModel<T> id(@NonNull CharSequence key, long id) {
+  public EpoxyModel<T> id(@Nullable CharSequence key, long id) {
     long result = hashString64Bit(key);
     result = 31 * result + hashLong64Bit(id);
     id(result);
     return this;
-  }
-
-  /**
-   * Hash a long into 64 bits instead of the normal 32. This uses a xor shift implementation to
-   * attempt psuedo randomness so object ids have an even spread for less chance of collisions.
-   * <p>
-   * From http://stackoverflow.com/a/11554034
-   * <p>
-   * http://www.javamex.com/tutorials/random_numbers/xorshift.shtml
-   */
-  private static long hashLong64Bit(long value) {
-    value ^= (value << 21);
-    value ^= (value >>> 35);
-    value ^= (value << 4);
-    return value;
-  }
-
-  /**
-   * Hash a string into 64 bits instead of the normal 32. This allows us to better use strings as a
-   * model id with less chance of collisions. This uses the FNV-1a algorithm for a good mix of speed
-   * and distribution.
-   * <p>
-   * Performance comparisons found at http://stackoverflow.com/a/1660613
-   * <p>
-   * Hash implementation from http://www.isthe.com/chongo/tech/comp/fnv/index.html#FNV-1a
-   */
-  private static long hashString64Bit(@NonNull CharSequence str) {
-    long result = 0xcbf29ce484222325L;
-    final int len = str.length();
-    for (int i = 0; i < len; i++) {
-      result ^= str.charAt(i);
-      result *= 0x100000001b3L;
-    }
-    return result;
   }
 
   /**
@@ -514,7 +553,11 @@ public abstract class EpoxyModel<T> {
     int getSpanSize(int totalSpanCount, int position, int itemCount);
   }
 
-  int getSpanSizeInternal(int totalSpanCount, int position, int itemCount) {
+  /**
+   * Returns the actual span size of this model, using the {@link SpanSizeOverrideCallback} if one
+   * was set, otherwise using the value from {@link #getSpanSize(int, int, int)}
+   */
+  public final int spanSize(int totalSpanCount, int position, int itemCount) {
     if (spanSizeOverride != null) {
       return spanSizeOverride.getSpanSize(totalSpanCount, position, itemCount);
     }
@@ -576,7 +619,7 @@ public abstract class EpoxyModel<T> {
    * from the RecyclerView.
    *
    * @return True if the View should be recycled, false otherwise
-   * @see EpoxyAdapter#onFailedToRecycleView(android.support.v7.widget.RecyclerView.ViewHolder)
+   * @see EpoxyAdapter#onFailedToRecycleView(androidx.recyclerview.widget.RecyclerView.ViewHolder)
    */
   public boolean onFailedToRecycleView(@NonNull T view) {
     return false;
@@ -585,7 +628,7 @@ public abstract class EpoxyModel<T> {
   /**
    * Called when this model's view is attached to the window.
    *
-   * @see EpoxyAdapter#onViewAttachedToWindow(android.support.v7.widget.RecyclerView.ViewHolder)
+   * @see EpoxyAdapter#onViewAttachedToWindow(androidx.recyclerview.widget.RecyclerView.ViewHolder)
    */
   public void onViewAttachedToWindow(@NonNull T view) {
 
@@ -594,7 +637,8 @@ public abstract class EpoxyModel<T> {
   /**
    * Called when this model's view is detached from the the window.
    *
-   * @see EpoxyAdapter#onViewDetachedFromWindow(android.support.v7.widget.RecyclerView.ViewHolder)
+   * @see EpoxyAdapter#onViewDetachedFromWindow(androidx.recyclerview.widget.RecyclerView
+   * .ViewHolder)
    */
   public void onViewDetachedFromWindow(@NonNull T view) {
 

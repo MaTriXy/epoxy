@@ -1,8 +1,7 @@
 package com.airbnb.epoxy;
 
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
 import java.lang.CharSequence;
 import java.lang.Number;
 import java.lang.Object;
@@ -10,11 +9,16 @@ import java.lang.Override;
 import java.lang.String;
 
 /**
- * Generated file. Do not modify! */
+ * Generated file. Do not modify!
+ */
 public class ModelWithFinalField_ extends ModelWithFinalField implements GeneratedModel<Object>, ModelWithFinalFieldBuilder {
   private OnModelBoundListener<ModelWithFinalField_, Object> onModelBoundListener_epoxyGeneratedModel;
 
   private OnModelUnboundListener<ModelWithFinalField_, Object> onModelUnboundListener_epoxyGeneratedModel;
+
+  private OnModelVisibilityStateChangedListener<ModelWithFinalField_, Object> onModelVisibilityStateChangedListener_epoxyGeneratedModel;
+
+  private OnModelVisibilityChangedListener<ModelWithFinalField_, Object> onModelVisibilityChangedListener_epoxyGeneratedModel;
 
   public ModelWithFinalField_(long id, int valueInt) {
     super(id, valueInt);
@@ -45,7 +49,8 @@ public class ModelWithFinalField_ extends ModelWithFinalField implements Generat
    * The listener will contribute to this model's hashCode state per the {@link
    * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
    * <p>
-   * You may clear the listener by setting a null value, or by calling {@link #reset()} */
+   * You may clear the listener by setting a null value, or by calling {@link #reset()}
+   */
   public ModelWithFinalField_ onBind(OnModelBoundListener<ModelWithFinalField_, Object> listener) {
     onMutation();
     this.onModelBoundListener_epoxyGeneratedModel = listener;
@@ -66,15 +71,70 @@ public class ModelWithFinalField_ extends ModelWithFinalField implements Generat
    * The listener will contribute to this model's hashCode state per the {@link
    * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
    * <p>
-   * You may clear the listener by setting a null value, or by calling {@link #reset()} */
-  public ModelWithFinalField_ onUnbind(OnModelUnboundListener<ModelWithFinalField_, Object> listener) {
+   * You may clear the listener by setting a null value, or by calling {@link #reset()}
+   */
+  public ModelWithFinalField_ onUnbind(
+      OnModelUnboundListener<ModelWithFinalField_, Object> listener) {
     onMutation();
     this.onModelUnboundListener_epoxyGeneratedModel = listener;
     return this;
   }
 
-  public int valueInt() {
-    return valueInt;
+  @Override
+  public void onVisibilityStateChanged(int visibilityState, final Object object) {
+    if (onModelVisibilityStateChangedListener_epoxyGeneratedModel != null) {
+      onModelVisibilityStateChangedListener_epoxyGeneratedModel.onVisibilityStateChanged(this, object, visibilityState);
+    }
+    super.onVisibilityStateChanged(visibilityState, object);
+  }
+
+  /**
+   * Register a listener that will be called when this model visibility state has changed.
+   * <p>
+   * The listener will contribute to this model's hashCode state per the {@link
+   * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
+   */
+  public ModelWithFinalField_ onVisibilityStateChanged(
+      OnModelVisibilityStateChangedListener<ModelWithFinalField_, Object> listener) {
+    onMutation();
+    this.onModelVisibilityStateChangedListener_epoxyGeneratedModel = listener;
+    return this;
+  }
+
+  @Override
+  public void onVisibilityChanged(float percentVisibleHeight, float percentVisibleWidth,
+      int visibleHeight, int visibleWidth, final Object object) {
+    if (onModelVisibilityChangedListener_epoxyGeneratedModel != null) {
+      onModelVisibilityChangedListener_epoxyGeneratedModel.onVisibilityChanged(this, object, percentVisibleHeight, percentVisibleWidth, visibleHeight, visibleWidth);
+    }
+    super.onVisibilityChanged(percentVisibleHeight, percentVisibleWidth, visibleHeight, visibleWidth, object);
+  }
+
+  /**
+   * Register a listener that will be called when this model visibility has changed.
+   * <p>
+   * The listener will contribute to this model's hashCode state per the {@link
+   * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
+   */
+  public ModelWithFinalField_ onVisibilityChanged(
+      OnModelVisibilityChangedListener<ModelWithFinalField_, Object> listener) {
+    onMutation();
+    this.onModelVisibilityChangedListener_epoxyGeneratedModel = listener;
+    return this;
+  }
+
+  public int finalValueInt() {
+    return finalValueInt;
+  }
+
+  public ModelWithFinalField_ nonFinalValueInt(int nonFinalValueInt) {
+    onMutation();
+    super.nonFinalValueInt = nonFinalValueInt;
+    return this;
+  }
+
+  public int nonFinalValueInt() {
+    return nonFinalValueInt;
   }
 
   @Override
@@ -84,8 +144,8 @@ public class ModelWithFinalField_ extends ModelWithFinalField implements Generat
   }
 
   @Override
-  public ModelWithFinalField_ id(@NonNull Number... arg0) {
-    super.id(arg0);
+  public ModelWithFinalField_ id(@Nullable Number... ids) {
+    super.id(ids);
     return this;
   }
 
@@ -96,32 +156,33 @@ public class ModelWithFinalField_ extends ModelWithFinalField implements Generat
   }
 
   @Override
-  public ModelWithFinalField_ id(@NonNull CharSequence arg0) {
-    super.id(arg0);
+  public ModelWithFinalField_ id(@Nullable CharSequence key) {
+    super.id(key);
     return this;
   }
 
   @Override
-  public ModelWithFinalField_ id(@NonNull CharSequence arg0, @NonNull CharSequence... arg1) {
-    super.id(arg0, arg1);
+  public ModelWithFinalField_ id(@Nullable CharSequence key, @Nullable CharSequence... otherKeys) {
+    super.id(key, otherKeys);
     return this;
   }
 
   @Override
-  public ModelWithFinalField_ id(@NonNull CharSequence arg0, long arg1) {
-    super.id(arg0, arg1);
+  public ModelWithFinalField_ id(@Nullable CharSequence key, long id) {
+    super.id(key, id);
     return this;
   }
 
   @Override
-  public ModelWithFinalField_ layout(@LayoutRes int arg0) {
-    super.layout(arg0);
+  public ModelWithFinalField_ layout(@LayoutRes int layoutRes) {
+    super.layout(layoutRes);
     return this;
   }
 
   @Override
-  public ModelWithFinalField_ spanSizeOverride(@Nullable EpoxyModel.SpanSizeOverrideCallback arg0) {
-    super.spanSizeOverride(arg0);
+  public ModelWithFinalField_ spanSizeOverride(
+      @Nullable EpoxyModel.SpanSizeOverrideCallback spanSizeCallback) {
+    super.spanSizeOverride(spanSizeCallback);
     return this;
   }
 
@@ -147,6 +208,9 @@ public class ModelWithFinalField_ extends ModelWithFinalField implements Generat
   public ModelWithFinalField_ reset() {
     onModelBoundListener_epoxyGeneratedModel = null;
     onModelUnboundListener_epoxyGeneratedModel = null;
+    onModelVisibilityStateChangedListener_epoxyGeneratedModel = null;
+    onModelVisibilityChangedListener_epoxyGeneratedModel = null;
+    super.nonFinalValueInt = 0;
     super.reset();
     return this;
   }
@@ -169,7 +233,16 @@ public class ModelWithFinalField_ extends ModelWithFinalField implements Generat
     if (((onModelUnboundListener_epoxyGeneratedModel == null) != (that.onModelUnboundListener_epoxyGeneratedModel == null))) {
       return false;
     }
-    if ((valueInt != that.valueInt)) {
+    if (((onModelVisibilityStateChangedListener_epoxyGeneratedModel == null) != (that.onModelVisibilityStateChangedListener_epoxyGeneratedModel == null))) {
+      return false;
+    }
+    if (((onModelVisibilityChangedListener_epoxyGeneratedModel == null) != (that.onModelVisibilityChangedListener_epoxyGeneratedModel == null))) {
+      return false;
+    }
+    if ((finalValueInt != that.finalValueInt)) {
+      return false;
+    }
+    if ((nonFinalValueInt != that.nonFinalValueInt)) {
       return false;
     }
     return true;
@@ -177,17 +250,21 @@ public class ModelWithFinalField_ extends ModelWithFinalField implements Generat
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (onModelBoundListener_epoxyGeneratedModel != null ? 1 : 0);
-    result = 31 * result + (onModelUnboundListener_epoxyGeneratedModel != null ? 1 : 0);
-    result = 31 * result + valueInt;
-    return result;
+    int _result = super.hashCode();
+    _result = 31 * _result + (onModelBoundListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelUnboundListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelVisibilityStateChangedListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelVisibilityChangedListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + finalValueInt;
+    _result = 31 * _result + nonFinalValueInt;
+    return _result;
   }
 
   @Override
   public String toString() {
     return "ModelWithFinalField_{" +
-        "valueInt=" + valueInt +
+        "finalValueInt=" + finalValueInt +
+        ", nonFinalValueInt=" + nonFinalValueInt +
         "}" + super.toString();
   }
 }

@@ -1,11 +1,11 @@
 package com.airbnb.epoxy;
 
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.AdapterDataObserver;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.CompoundButton;
 
 import com.airbnb.epoxy.integrationtest.BuildConfig;
+import com.airbnb.epoxy.integrationtest.ModelWithCheckedChangeListener_;
 import com.airbnb.epoxy.integrationtest.ModelWithClickListener_;
 import com.airbnb.epoxy.integrationtest.ModelWithLongClickListener_;
 
@@ -13,6 +13,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.annotation.LooperMode;
+
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
@@ -21,6 +25,7 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -29,7 +34,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+@LooperMode(LooperMode.Mode.LEGACY)
 public class ModelClickListenerTest {
 
   private ControllerLifecycleHelper lifecycleHelper = new ControllerLifecycleHelper();
@@ -67,6 +72,17 @@ public class ModelClickListenerTest {
     }
   }
 
+  static class ModelCheckedChangeListener
+      implements OnModelCheckedChangeListener<ModelWithCheckedChangeListener_, View> {
+    boolean checked;
+
+    @Override
+    public void onChecked(ModelWithCheckedChangeListener_ model, View parentView,
+        CompoundButton checkedView, boolean isChecked, int position) {
+      checked = true;
+    }
+  }
+
   static class ViewClickListener implements OnClickListener {
     boolean clicked;
 
@@ -100,6 +116,11 @@ public class ModelClickListenerTest {
     RecyclerView recyclerMock = mock(RecyclerView.class);
     EpoxyViewHolder holderMock = mock(EpoxyViewHolder.class);
 
+    when(holderMock.getAdapterPosition()).thenReturn(1);
+    doReturn(recyclerMock).when(mockedView).getParent();
+    doReturn(holderMock).when(recyclerMock).findContainingViewHolder(mockedView);
+    doReturn(model).when(holderMock).getModel();
+
     when(mockedView.getParent()).thenReturn(recyclerMock);
     when(recyclerMock.findContainingViewHolder(mockedView)).thenReturn(holderMock);
     when(holderMock.getAdapterPosition()).thenReturn(1);
@@ -107,6 +128,7 @@ public class ModelClickListenerTest {
 
     View parentView = mock(View.class);
     when(holderMock.objectToBind()).thenReturn(parentView);
+    doReturn(parentView).when(holderMock).objectToBind();
     return mockedView;
   }
 
@@ -127,6 +149,46 @@ public class ModelClickListenerTest {
     assertTrue(modelClickListener.clicked);
 
     verify(modelClickListener).onLongClick(eq(model), any(View.class), eq(viewMock), eq(1));
+  }
+
+  @Test
+  public void basicModelCheckedChangeListener() {
+    final ModelWithCheckedChangeListener_ model = new ModelWithCheckedChangeListener_();
+    ModelCheckedChangeListener modelCheckedChangeListener = spy(new ModelCheckedChangeListener());
+    model.checkedChangeListener(modelCheckedChangeListener);
+
+    TestController controller = new TestController();
+    controller.setModel(model);
+
+    lifecycleHelper.buildModelsAndBind(controller);
+
+    CompoundButton compoundMock = mockCompoundButtonForClicking(model);
+
+    model.checkedChangeListener().onCheckedChanged(compoundMock, true);
+    assertTrue(modelCheckedChangeListener.checked);
+
+    verify(modelCheckedChangeListener).onChecked(eq(model), any(View.class), any(CompoundButton.class), eq(true), eq(1));
+  }
+
+  private CompoundButton mockCompoundButtonForClicking(EpoxyModel model) {
+    CompoundButton mockedView = mock(CompoundButton.class);
+    RecyclerView recyclerMock = mock(RecyclerView.class);
+    EpoxyViewHolder holderMock = mock(EpoxyViewHolder.class);
+
+    when(holderMock.getAdapterPosition()).thenReturn(1);
+    doReturn(recyclerMock).when(mockedView).getParent();
+    doReturn(holderMock).when(recyclerMock).findContainingViewHolder(mockedView);
+    doReturn(model).when(holderMock).getModel();
+
+    when(mockedView.getParent()).thenReturn(recyclerMock);
+    when(recyclerMock.findContainingViewHolder(mockedView)).thenReturn(holderMock);
+    when(holderMock.getAdapterPosition()).thenReturn(1);
+    when(holderMock.getModel()).thenReturn(model);
+
+    View parentView = mock(View.class);
+    when(holderMock.objectToBind()).thenReturn(parentView);
+    doReturn(parentView).when(holderMock).objectToBind();
+    return mockedView;
   }
 
   @Test

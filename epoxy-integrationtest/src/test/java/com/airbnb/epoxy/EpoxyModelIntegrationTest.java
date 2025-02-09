@@ -10,10 +10,9 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
 public class EpoxyModelIntegrationTest {
 
   static class ModelWithSpanCount extends EpoxyModel<View> {
@@ -31,7 +30,7 @@ public class EpoxyModelIntegrationTest {
   @Test
   public void modelReturnsSpanCount() {
     ModelWithSpanCount model = new ModelWithSpanCount();
-    assertEquals(6, model.getSpanSizeInternal(0, 0, 0));
+    assertEquals(6, model.spanSize(0, 0, 0));
   }
 
   static class ModelWithSpanCountCallback extends EpoxyModel<View> {
@@ -51,6 +50,6 @@ public class EpoxyModelIntegrationTest {
       }
     });
 
-    assertEquals(7, model.getSpanSizeInternal(0, 0, 0));
+    assertEquals(7, model.spanSize(0, 0, 0));
   }
 }

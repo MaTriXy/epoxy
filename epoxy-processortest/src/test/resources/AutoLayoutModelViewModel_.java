@@ -1,28 +1,27 @@
 package com.airbnb.epoxy;
 
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.ViewGroup;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
 import java.lang.CharSequence;
 import java.lang.Number;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.UnsupportedOperationException;
-import java.util.BitSet;
 
 /**
- * Generated file. Do not modify! */
+ * Generated file. Do not modify!
+ */
 public class AutoLayoutModelViewModel_ extends EpoxyModel<AutoLayoutModelView> implements GeneratedModel<AutoLayoutModelView>, AutoLayoutModelViewModelBuilder {
-  private final BitSet assignedAttributes_epoxyGeneratedModel = new BitSet(1);
-
   private OnModelBoundListener<AutoLayoutModelViewModel_, AutoLayoutModelView> onModelBoundListener_epoxyGeneratedModel;
 
   private OnModelUnboundListener<AutoLayoutModelViewModel_, AutoLayoutModelView> onModelUnboundListener_epoxyGeneratedModel;
 
-  /**
-   * Bitset index: 0 */
+  private OnModelVisibilityStateChangedListener<AutoLayoutModelViewModel_, AutoLayoutModelView> onModelVisibilityStateChangedListener_epoxyGeneratedModel;
+
+  private OnModelVisibilityChangedListener<AutoLayoutModelViewModel_, AutoLayoutModelView> onModelVisibilityChangedListener_epoxyGeneratedModel;
+
   private int value_Int = 0;
 
   @Override
@@ -37,7 +36,7 @@ public class AutoLayoutModelViewModel_ extends EpoxyModel<AutoLayoutModelView> i
   }
 
   @Override
-  protected AutoLayoutModelView buildView(ViewGroup parent) {
+  public AutoLayoutModelView buildView(ViewGroup parent) {
     AutoLayoutModelView v = new AutoLayoutModelView(parent.getContext());
     v.setLayoutParams(new ViewGroup.MarginLayoutParams(ViewGroup.MarginLayoutParams.WRAP_CONTENT, ViewGroup.MarginLayoutParams.WRAP_CONTENT));
     return v;
@@ -83,8 +82,10 @@ public class AutoLayoutModelViewModel_ extends EpoxyModel<AutoLayoutModelView> i
    * The listener will contribute to this model's hashCode state per the {@link
    * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
    * <p>
-   * You may clear the listener by setting a null value, or by calling {@link #reset()} */
-  public AutoLayoutModelViewModel_ onBind(OnModelBoundListener<AutoLayoutModelViewModel_, AutoLayoutModelView> listener) {
+   * You may clear the listener by setting a null value, or by calling {@link #reset()}
+   */
+  public AutoLayoutModelViewModel_ onBind(
+      OnModelBoundListener<AutoLayoutModelViewModel_, AutoLayoutModelView> listener) {
     onMutation();
     this.onModelBoundListener_epoxyGeneratedModel = listener;
     return this;
@@ -104,10 +105,55 @@ public class AutoLayoutModelViewModel_ extends EpoxyModel<AutoLayoutModelView> i
    * The listener will contribute to this model's hashCode state per the {@link
    * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
    * <p>
-   * You may clear the listener by setting a null value, or by calling {@link #reset()} */
-  public AutoLayoutModelViewModel_ onUnbind(OnModelUnboundListener<AutoLayoutModelViewModel_, AutoLayoutModelView> listener) {
+   * You may clear the listener by setting a null value, or by calling {@link #reset()}
+   */
+  public AutoLayoutModelViewModel_ onUnbind(
+      OnModelUnboundListener<AutoLayoutModelViewModel_, AutoLayoutModelView> listener) {
     onMutation();
     this.onModelUnboundListener_epoxyGeneratedModel = listener;
+    return this;
+  }
+
+  @Override
+  public void onVisibilityStateChanged(int visibilityState, final AutoLayoutModelView object) {
+    if (onModelVisibilityStateChangedListener_epoxyGeneratedModel != null) {
+      onModelVisibilityStateChangedListener_epoxyGeneratedModel.onVisibilityStateChanged(this, object, visibilityState);
+    }
+    super.onVisibilityStateChanged(visibilityState, object);
+  }
+
+  /**
+   * Register a listener that will be called when this model visibility state has changed.
+   * <p>
+   * The listener will contribute to this model's hashCode state per the {@link
+   * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
+   */
+  public AutoLayoutModelViewModel_ onVisibilityStateChanged(
+      OnModelVisibilityStateChangedListener<AutoLayoutModelViewModel_, AutoLayoutModelView> listener) {
+    onMutation();
+    this.onModelVisibilityStateChangedListener_epoxyGeneratedModel = listener;
+    return this;
+  }
+
+  @Override
+  public void onVisibilityChanged(float percentVisibleHeight, float percentVisibleWidth,
+      int visibleHeight, int visibleWidth, final AutoLayoutModelView object) {
+    if (onModelVisibilityChangedListener_epoxyGeneratedModel != null) {
+      onModelVisibilityChangedListener_epoxyGeneratedModel.onVisibilityChanged(this, object, percentVisibleHeight, percentVisibleWidth, visibleHeight, visibleWidth);
+    }
+    super.onVisibilityChanged(percentVisibleHeight, percentVisibleWidth, visibleHeight, visibleWidth, object);
+  }
+
+  /**
+   * Register a listener that will be called when this model visibility has changed.
+   * <p>
+   * The listener will contribute to this model's hashCode state per the {@link
+   * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
+   */
+  public AutoLayoutModelViewModel_ onVisibilityChanged(
+      OnModelVisibilityChangedListener<AutoLayoutModelViewModel_, AutoLayoutModelView> listener) {
+    onMutation();
+    this.onModelVisibilityChangedListener_epoxyGeneratedModel = listener;
     return this;
   }
 
@@ -117,7 +163,6 @@ public class AutoLayoutModelViewModel_ extends EpoxyModel<AutoLayoutModelView> i
    * @see AutoLayoutModelView#setValue(int)
    */
   public AutoLayoutModelViewModel_ value(int value) {
-    assignedAttributes_epoxyGeneratedModel.set(0);
     onMutation();
     this.value_Int = value;
     return this;
@@ -134,8 +179,8 @@ public class AutoLayoutModelViewModel_ extends EpoxyModel<AutoLayoutModelView> i
   }
 
   @Override
-  public AutoLayoutModelViewModel_ id(@NonNull Number... arg0) {
-    super.id(arg0);
+  public AutoLayoutModelViewModel_ id(@Nullable Number... ids) {
+    super.id(ids);
     return this;
   }
 
@@ -146,31 +191,33 @@ public class AutoLayoutModelViewModel_ extends EpoxyModel<AutoLayoutModelView> i
   }
 
   @Override
-  public AutoLayoutModelViewModel_ id(@NonNull CharSequence arg0) {
-    super.id(arg0);
+  public AutoLayoutModelViewModel_ id(@Nullable CharSequence key) {
+    super.id(key);
     return this;
   }
 
   @Override
-  public AutoLayoutModelViewModel_ id(@NonNull CharSequence arg0, @NonNull CharSequence... arg1) {
-    super.id(arg0, arg1);
+  public AutoLayoutModelViewModel_ id(@Nullable CharSequence key,
+      @Nullable CharSequence... otherKeys) {
+    super.id(key, otherKeys);
     return this;
   }
 
   @Override
-  public AutoLayoutModelViewModel_ id(@NonNull CharSequence arg0, long arg1) {
-    super.id(arg0, arg1);
+  public AutoLayoutModelViewModel_ id(@Nullable CharSequence key, long id) {
+    super.id(key, id);
     return this;
   }
 
   @Override
-  public AutoLayoutModelViewModel_ layout(@LayoutRes int arg0) {
+  public AutoLayoutModelViewModel_ layout(@LayoutRes int layoutRes) {
     throw new UnsupportedOperationException("Layout resources are unsupported with programmatic views.");
   }
 
   @Override
-  public AutoLayoutModelViewModel_ spanSizeOverride(@Nullable EpoxyModel.SpanSizeOverrideCallback arg0) {
-    super.spanSizeOverride(arg0);
+  public AutoLayoutModelViewModel_ spanSizeOverride(
+      @Nullable EpoxyModel.SpanSizeOverrideCallback spanSizeCallback) {
+    super.spanSizeOverride(spanSizeCallback);
     return this;
   }
 
@@ -202,7 +249,8 @@ public class AutoLayoutModelViewModel_ extends EpoxyModel<AutoLayoutModelView> i
   public AutoLayoutModelViewModel_ reset() {
     onModelBoundListener_epoxyGeneratedModel = null;
     onModelUnboundListener_epoxyGeneratedModel = null;
-    assignedAttributes_epoxyGeneratedModel.clear();
+    onModelVisibilityStateChangedListener_epoxyGeneratedModel = null;
+    onModelVisibilityChangedListener_epoxyGeneratedModel = null;
     this.value_Int = 0;
     super.reset();
     return this;
@@ -226,6 +274,12 @@ public class AutoLayoutModelViewModel_ extends EpoxyModel<AutoLayoutModelView> i
     if (((onModelUnboundListener_epoxyGeneratedModel == null) != (that.onModelUnboundListener_epoxyGeneratedModel == null))) {
       return false;
     }
+    if (((onModelVisibilityStateChangedListener_epoxyGeneratedModel == null) != (that.onModelVisibilityStateChangedListener_epoxyGeneratedModel == null))) {
+      return false;
+    }
+    if (((onModelVisibilityChangedListener_epoxyGeneratedModel == null) != (that.onModelVisibilityChangedListener_epoxyGeneratedModel == null))) {
+      return false;
+    }
     if ((value_Int != that.value_Int)) {
       return false;
     }
@@ -234,11 +288,13 @@ public class AutoLayoutModelViewModel_ extends EpoxyModel<AutoLayoutModelView> i
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (onModelBoundListener_epoxyGeneratedModel != null ? 1 : 0);
-    result = 31 * result + (onModelUnboundListener_epoxyGeneratedModel != null ? 1 : 0);
-    result = 31 * result + value_Int;
-    return result;
+    int _result = super.hashCode();
+    _result = 31 * _result + (onModelBoundListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelUnboundListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelVisibilityStateChangedListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelVisibilityChangedListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + value_Int;
+    return _result;
   }
 
   @Override

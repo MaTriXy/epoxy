@@ -1,8 +1,7 @@
 package com.airbnb.epoxy;
 
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
 import java.lang.Boolean;
 import java.lang.Byte;
 import java.lang.CharSequence;
@@ -17,10 +16,19 @@ import java.lang.Short;
 import java.lang.String;
 import java.util.List;
 
+@EpoxyBuildScope
 public interface ModelWithAllFieldTypesBuilder {
-  ModelWithAllFieldTypesBuilder onBind(OnModelBoundListener<ModelWithAllFieldTypes_, Object> listener);
+  ModelWithAllFieldTypesBuilder onBind(
+      OnModelBoundListener<ModelWithAllFieldTypes_, Object> listener);
 
-  ModelWithAllFieldTypesBuilder onUnbind(OnModelUnboundListener<ModelWithAllFieldTypes_, Object> listener);
+  ModelWithAllFieldTypesBuilder onUnbind(
+      OnModelUnboundListener<ModelWithAllFieldTypes_, Object> listener);
+
+  ModelWithAllFieldTypesBuilder onVisibilityStateChanged(
+      OnModelVisibilityStateChangedListener<ModelWithAllFieldTypes_, Object> listener);
+
+  ModelWithAllFieldTypesBuilder onVisibilityChanged(
+      OnModelVisibilityChangedListener<ModelWithAllFieldTypes_, Object> listener);
 
   ModelWithAllFieldTypesBuilder valueInt(int valueInt);
 
@@ -66,17 +74,18 @@ public interface ModelWithAllFieldTypesBuilder {
 
   ModelWithAllFieldTypesBuilder id(long id);
 
-  ModelWithAllFieldTypesBuilder id(@NonNull Number... arg0);
+  ModelWithAllFieldTypesBuilder id(@Nullable Number... ids);
 
   ModelWithAllFieldTypesBuilder id(long id1, long id2);
 
-  ModelWithAllFieldTypesBuilder id(@NonNull CharSequence arg0);
+  ModelWithAllFieldTypesBuilder id(@Nullable CharSequence key);
 
-  ModelWithAllFieldTypesBuilder id(@NonNull CharSequence arg0, @NonNull CharSequence... arg1);
+  ModelWithAllFieldTypesBuilder id(@Nullable CharSequence key, @Nullable CharSequence... otherKeys);
 
-  ModelWithAllFieldTypesBuilder id(@NonNull CharSequence arg0, long arg1);
+  ModelWithAllFieldTypesBuilder id(@Nullable CharSequence key, long id);
 
-  ModelWithAllFieldTypesBuilder layout(@LayoutRes int arg0);
+  ModelWithAllFieldTypesBuilder layout(@LayoutRes int layoutRes);
 
-  ModelWithAllFieldTypesBuilder spanSizeOverride(@Nullable EpoxyModel.SpanSizeOverrideCallback arg0);
+  ModelWithAllFieldTypesBuilder spanSizeOverride(
+      @Nullable EpoxyModel.SpanSizeOverrideCallback spanSizeCallback);
 }

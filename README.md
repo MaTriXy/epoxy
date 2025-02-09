@@ -1,6 +1,11 @@
+[![Build Status](https://travis-ci.com/airbnb/epoxy.svg?branch=master)](https://travis-ci.com/github/airbnb/epoxy)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.airbnb.android/epoxy/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.airbnb.android/epoxy)
+[![GitHub license](https://img.shields.io/github/license/airbnb/epoxy)](https://github.com/airbnb/epoxy/blob/master/LICENSE)
+![GitHub contributors](https://img.shields.io/github/contributors/airbnb/epoxy)
+
 # Epoxy
 
-Epoxy is an Android library for building complex screens in a RecyclerView. Models are automatically generated from custom views, databinding layouts, or Litho components via annotation processing. These models are then used in an EpoxyController to declare what items to show in the RecyclerView.
+Epoxy is an Android library for building complex screens in a RecyclerView. Models are automatically generated from custom views or databinding layouts via annotation processing. These models are then used in an EpoxyController to declare what items to show in the RecyclerView.
 
 This abstracts the boilerplate of view holders, diffing items and binding payload changes, item types, item ids, span counts, and more, in order to simplify building screens with multiple view types. Additionally, Epoxy adds support for saving view state and automatic diffing of item changes.
 
@@ -19,11 +24,15 @@ Gradle is the only supported build configuration, so just add the dependency to 
 
 ```groovy
 dependencies {
-  compile 'com.airbnb.android:epoxy:2.12.0'
+  implementation "com.airbnb.android:epoxy:$epoxyVersion"
   // Add the annotation processor if you are using Epoxy's annotations (recommended)
-  annotationProcessor 'com.airbnb.android:epoxy-processor:2.12.0'
+  annotationProcessor "com.airbnb.android:epoxy-processor:$epoxyVersion"
 }
 ```
+
+Replace the variable `$epoxyVersion` with the latest version : [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.airbnb.android/epoxy/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.airbnb.android/epoxy)
+
+See the [releases page](https://github.com/airbnb/epoxy/releases) for up to date release versions and details
 
 #### Kotlin
 If you are using Kotlin you should also add
@@ -40,7 +49,7 @@ so that `AutoModel` annotations work properly. More information [here](https://g
 Also, make sure to use `kapt` instead of `annotationProcessor` in your dependencies in the `build.gradle` file.
 
 ## Library Projects
-To use Epoxy in a library or module add [Butterknife's gradle plugin](https://github.com/JakeWharton/butterknife#library-projects) to your `buildscript`.
+If you are using layout resources in Epoxy annotations then for library projects add [Butterknife's gradle plugin](https://github.com/JakeWharton/butterknife#library-projects) to your `buildscript`.
 
 ```yaml
 buildscript {
@@ -48,7 +57,7 @@ buildscript {
     mavenCentral()
    }
   dependencies {
-    classpath 'com.jakewharton:butterknife-gradle-plugin:8.7.0'
+    classpath 'com.jakewharton:butterknife-gradle-plugin:10.1.0'
   }
 }
 ```
@@ -67,6 +76,8 @@ public class HeaderView extends LinearLayout {
 }
 ```
 
+This is not necessary if you don't use resources as annotation parameters, such as with [custom view models](https://github.com/airbnb/epoxy/wiki/Generating-Models-from-View-Annotations).
+
 ## Basic Usage
 There are two main components of Epoxy:
 
@@ -74,7 +85,7 @@ There are two main components of Epoxy:
 2. The `EpoxyController` where the models are used to describe what items to show and with what data.
 
 ### Creating Models
-Epoxy generates models for you based on your view or layout. Generated model classes are suffixed with an underscore (`_`) are are used directly in your EpoxyController classes.
+Epoxy generates models for you based on your view or layout. Generated model classes are suffixed with an underscore (`_`) are used directly in your EpoxyController classes.
 
 #### From Custom Views
 Add the `@ModelView` annotation on a view class. Then, add a "prop" annotation on each setter method to mark it as a property for the model.
@@ -113,14 +124,15 @@ If you use Android DataBinding you can simply set up your xml layouts like norma
 </layout>
 ```
 
-Then, create a `package-info.java` file in any package and add an `EpoxyDataBindingLayouts` annotation to declare your databinding layouts.
+Then, create an interface or class in any package and add an `EpoxyDataBindingLayouts` annotation to declare your databinding layouts.
 
 ```java
-@EpoxyDataBindingLayouts({R.layout.header_view, ... // other layouts })
 package com.airbnb.epoxy.sample;
 
 import com.airbnb.epoxy.EpoxyDataBindingLayouts;
-import com.airbnb.epoxy.R;
+
+@EpoxyDataBindingLayouts({R.layout.header_view, ... // other layouts })
+interface EpoxyConfig {}
 ```
 
 From this layout name Epoxy generates a `HeaderViewBindingModel_`.
@@ -265,8 +277,6 @@ If you still have questions, feel free to create a new issue.
 
 ## Min SDK
 We support a minimum SDK of 14. However, Epoxy is based on the v7 support libraries so it should work with lower versions if you care to override the min sdk level in the manifest.
-
-If you are using the [optional Litho integration](https://github.com/airbnb/epoxy/wiki/Litho-Support) then the min SDK is 15  due to Litho's SDK requirement.
 
 ## Contributing
 Pull requests are welcome! We'd love help improving this library. Feel free to browse through open issues to look for things that need work. If you have a feature request or bug, please open a new issue so we can track it.

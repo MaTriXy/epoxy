@@ -1,11 +1,11 @@
 package com.airbnb.epoxy;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.PluralsRes;
-import android.support.annotation.StringRes;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.PluralsRes;
+import androidx.annotation.StringRes;
 import java.lang.CharSequence;
 import java.lang.IllegalArgumentException;
 import java.lang.IllegalStateException;
@@ -17,7 +17,8 @@ import java.util.BitSet;
 import java.util.List;
 
 /**
- * Generated file. Do not modify! */
+ * Generated file. Do not modify!
+ */
 public class TestStringOverloadsViewModel_ extends EpoxyModel<TestStringOverloadsView> implements GeneratedModel<TestStringOverloadsView>, TestStringOverloadsViewModelBuilder {
   private final BitSet assignedAttributes_epoxyGeneratedModel = new BitSet(3);
 
@@ -25,17 +26,24 @@ public class TestStringOverloadsViewModel_ extends EpoxyModel<TestStringOverload
 
   private OnModelUnboundListener<TestStringOverloadsViewModel_, TestStringOverloadsView> onModelUnboundListener_epoxyGeneratedModel;
 
+  private OnModelVisibilityStateChangedListener<TestStringOverloadsViewModel_, TestStringOverloadsView> onModelVisibilityStateChangedListener_epoxyGeneratedModel;
+
+  private OnModelVisibilityChangedListener<TestStringOverloadsViewModel_, TestStringOverloadsView> onModelVisibilityChangedListener_epoxyGeneratedModel;
+
   /**
-   * Bitset index: 0 */
+   * Bitset index: 0
+   */
   private StringAttributeData title_StringAttributeData =  new StringAttributeData();
 
   /**
-   * Bitset index: 1 */
+   * Bitset index: 1
+   */
   @Nullable
   private List<CharSequence> title_List = (List<CharSequence>) null;
 
   /**
-   * Bitset index: 2 */
+   * Bitset index: 2
+   */
   private StringAttributeData titleViaValueShortcut_StringAttributeData =  new StringAttributeData();
 
   @Override
@@ -111,8 +119,10 @@ public class TestStringOverloadsViewModel_ extends EpoxyModel<TestStringOverload
    * The listener will contribute to this model's hashCode state per the {@link
    * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
    * <p>
-   * You may clear the listener by setting a null value, or by calling {@link #reset()} */
-  public TestStringOverloadsViewModel_ onBind(OnModelBoundListener<TestStringOverloadsViewModel_, TestStringOverloadsView> listener) {
+   * You may clear the listener by setting a null value, or by calling {@link #reset()}
+   */
+  public TestStringOverloadsViewModel_ onBind(
+      OnModelBoundListener<TestStringOverloadsViewModel_, TestStringOverloadsView> listener) {
     onMutation();
     this.onModelBoundListener_epoxyGeneratedModel = listener;
     return this;
@@ -132,10 +142,55 @@ public class TestStringOverloadsViewModel_ extends EpoxyModel<TestStringOverload
    * The listener will contribute to this model's hashCode state per the {@link
    * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
    * <p>
-   * You may clear the listener by setting a null value, or by calling {@link #reset()} */
-  public TestStringOverloadsViewModel_ onUnbind(OnModelUnboundListener<TestStringOverloadsViewModel_, TestStringOverloadsView> listener) {
+   * You may clear the listener by setting a null value, or by calling {@link #reset()}
+   */
+  public TestStringOverloadsViewModel_ onUnbind(
+      OnModelUnboundListener<TestStringOverloadsViewModel_, TestStringOverloadsView> listener) {
     onMutation();
     this.onModelUnboundListener_epoxyGeneratedModel = listener;
+    return this;
+  }
+
+  @Override
+  public void onVisibilityStateChanged(int visibilityState, final TestStringOverloadsView object) {
+    if (onModelVisibilityStateChangedListener_epoxyGeneratedModel != null) {
+      onModelVisibilityStateChangedListener_epoxyGeneratedModel.onVisibilityStateChanged(this, object, visibilityState);
+    }
+    super.onVisibilityStateChanged(visibilityState, object);
+  }
+
+  /**
+   * Register a listener that will be called when this model visibility state has changed.
+   * <p>
+   * The listener will contribute to this model's hashCode state per the {@link
+   * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
+   */
+  public TestStringOverloadsViewModel_ onVisibilityStateChanged(
+      OnModelVisibilityStateChangedListener<TestStringOverloadsViewModel_, TestStringOverloadsView> listener) {
+    onMutation();
+    this.onModelVisibilityStateChangedListener_epoxyGeneratedModel = listener;
+    return this;
+  }
+
+  @Override
+  public void onVisibilityChanged(float percentVisibleHeight, float percentVisibleWidth,
+      int visibleHeight, int visibleWidth, final TestStringOverloadsView object) {
+    if (onModelVisibilityChangedListener_epoxyGeneratedModel != null) {
+      onModelVisibilityChangedListener_epoxyGeneratedModel.onVisibilityChanged(this, object, percentVisibleHeight, percentVisibleWidth, visibleHeight, visibleWidth);
+    }
+    super.onVisibilityChanged(percentVisibleHeight, percentVisibleWidth, visibleHeight, visibleWidth, object);
+  }
+
+  /**
+   * Register a listener that will be called when this model visibility has changed.
+   * <p>
+   * The listener will contribute to this model's hashCode state per the {@link
+   * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
+   */
+  public TestStringOverloadsViewModel_ onVisibilityChanged(
+      OnModelVisibilityChangedListener<TestStringOverloadsViewModel_, TestStringOverloadsView> listener) {
+    onMutation();
+    this.onModelVisibilityChangedListener_epoxyGeneratedModel = listener;
     return this;
   }
 
@@ -229,7 +284,8 @@ public class TestStringOverloadsViewModel_ extends EpoxyModel<TestStringOverload
    *
    * @see TestStringOverloadsView#setTitleViaValueShortcut(CharSequence)
    */
-  public TestStringOverloadsViewModel_ titleViaValueShortcut(@NonNull CharSequence titleViaValueShortcut) {
+  public TestStringOverloadsViewModel_ titleViaValueShortcut(
+      @NonNull CharSequence titleViaValueShortcut) {
     onMutation();
     assignedAttributes_epoxyGeneratedModel.set(2);
     if (titleViaValueShortcut == null) {
@@ -290,8 +346,8 @@ public class TestStringOverloadsViewModel_ extends EpoxyModel<TestStringOverload
   }
 
   @Override
-  public TestStringOverloadsViewModel_ id(@NonNull Number... arg0) {
-    super.id(arg0);
+  public TestStringOverloadsViewModel_ id(@Nullable Number... ids) {
+    super.id(ids);
     return this;
   }
 
@@ -302,33 +358,34 @@ public class TestStringOverloadsViewModel_ extends EpoxyModel<TestStringOverload
   }
 
   @Override
-  public TestStringOverloadsViewModel_ id(@NonNull CharSequence arg0) {
-    super.id(arg0);
+  public TestStringOverloadsViewModel_ id(@Nullable CharSequence key) {
+    super.id(key);
     return this;
   }
 
   @Override
-  public TestStringOverloadsViewModel_ id(@NonNull CharSequence arg0,
-      @NonNull CharSequence... arg1) {
-    super.id(arg0, arg1);
+  public TestStringOverloadsViewModel_ id(@Nullable CharSequence key,
+      @Nullable CharSequence... otherKeys) {
+    super.id(key, otherKeys);
     return this;
   }
 
   @Override
-  public TestStringOverloadsViewModel_ id(@NonNull CharSequence arg0, long arg1) {
-    super.id(arg0, arg1);
+  public TestStringOverloadsViewModel_ id(@Nullable CharSequence key, long id) {
+    super.id(key, id);
     return this;
   }
 
   @Override
-  public TestStringOverloadsViewModel_ layout(@LayoutRes int arg0) {
-    super.layout(arg0);
+  public TestStringOverloadsViewModel_ layout(@LayoutRes int layoutRes) {
+    super.layout(layoutRes);
     return this;
   }
 
   @Override
-  public TestStringOverloadsViewModel_ spanSizeOverride(@Nullable EpoxyModel.SpanSizeOverrideCallback arg0) {
-    super.spanSizeOverride(arg0);
+  public TestStringOverloadsViewModel_ spanSizeOverride(
+      @Nullable EpoxyModel.SpanSizeOverrideCallback spanSizeCallback) {
+    super.spanSizeOverride(spanSizeCallback);
     return this;
   }
 
@@ -360,6 +417,8 @@ public class TestStringOverloadsViewModel_ extends EpoxyModel<TestStringOverload
   public TestStringOverloadsViewModel_ reset() {
     onModelBoundListener_epoxyGeneratedModel = null;
     onModelUnboundListener_epoxyGeneratedModel = null;
+    onModelVisibilityStateChangedListener_epoxyGeneratedModel = null;
+    onModelVisibilityChangedListener_epoxyGeneratedModel = null;
     assignedAttributes_epoxyGeneratedModel.clear();
     this.title_StringAttributeData =  new StringAttributeData();
     this.title_List = (List<CharSequence>) null;
@@ -386,6 +445,12 @@ public class TestStringOverloadsViewModel_ extends EpoxyModel<TestStringOverload
     if (((onModelUnboundListener_epoxyGeneratedModel == null) != (that.onModelUnboundListener_epoxyGeneratedModel == null))) {
       return false;
     }
+    if (((onModelVisibilityStateChangedListener_epoxyGeneratedModel == null) != (that.onModelVisibilityStateChangedListener_epoxyGeneratedModel == null))) {
+      return false;
+    }
+    if (((onModelVisibilityChangedListener_epoxyGeneratedModel == null) != (that.onModelVisibilityChangedListener_epoxyGeneratedModel == null))) {
+      return false;
+    }
     if ((title_StringAttributeData != null ? !title_StringAttributeData.equals(that.title_StringAttributeData) : that.title_StringAttributeData != null)) {
       return false;
     }
@@ -400,13 +465,15 @@ public class TestStringOverloadsViewModel_ extends EpoxyModel<TestStringOverload
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (onModelBoundListener_epoxyGeneratedModel != null ? 1 : 0);
-    result = 31 * result + (onModelUnboundListener_epoxyGeneratedModel != null ? 1 : 0);
-    result = 31 * result + (title_StringAttributeData != null ? title_StringAttributeData.hashCode() : 0);
-    result = 31 * result + (title_List != null ? title_List.hashCode() : 0);
-    result = 31 * result + (titleViaValueShortcut_StringAttributeData != null ? titleViaValueShortcut_StringAttributeData.hashCode() : 0);
-    return result;
+    int _result = super.hashCode();
+    _result = 31 * _result + (onModelBoundListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelUnboundListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelVisibilityStateChangedListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelVisibilityChangedListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (title_StringAttributeData != null ? title_StringAttributeData.hashCode() : 0);
+    _result = 31 * _result + (title_List != null ? title_List.hashCode() : 0);
+    _result = 31 * _result + (titleViaValueShortcut_StringAttributeData != null ? titleViaValueShortcut_StringAttributeData.hashCode() : 0);
+    return _result;
   }
 
   @Override

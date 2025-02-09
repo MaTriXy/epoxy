@@ -1,30 +1,27 @@
 package com.airbnb.epoxy;
 
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
 import java.lang.CharSequence;
 import java.lang.Number;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.BitSet;
 
 /**
- * Generated file. Do not modify! */
+ * Generated file. Do not modify!
+ */
 public class TestAfterBindPropsViewModel_ extends EpoxyModel<TestAfterBindPropsView> implements GeneratedModel<TestAfterBindPropsView>, TestAfterBindPropsViewModelBuilder {
-  private final BitSet assignedAttributes_epoxyGeneratedModel = new BitSet(2);
-
   private OnModelBoundListener<TestAfterBindPropsViewModel_, TestAfterBindPropsView> onModelBoundListener_epoxyGeneratedModel;
 
   private OnModelUnboundListener<TestAfterBindPropsViewModel_, TestAfterBindPropsView> onModelUnboundListener_epoxyGeneratedModel;
 
-  /**
-   * Bitset index: 0 */
+  private OnModelVisibilityStateChangedListener<TestAfterBindPropsViewModel_, TestAfterBindPropsView> onModelVisibilityStateChangedListener_epoxyGeneratedModel;
+
+  private OnModelVisibilityChangedListener<TestAfterBindPropsViewModel_, TestAfterBindPropsView> onModelVisibilityChangedListener_epoxyGeneratedModel;
+
   private boolean flag_Boolean = false;
 
-  /**
-   * Bitset index: 1 */
   private boolean flagSuper_Boolean = false;
 
   @Override
@@ -80,8 +77,10 @@ public class TestAfterBindPropsViewModel_ extends EpoxyModel<TestAfterBindPropsV
    * The listener will contribute to this model's hashCode state per the {@link
    * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
    * <p>
-   * You may clear the listener by setting a null value, or by calling {@link #reset()} */
-  public TestAfterBindPropsViewModel_ onBind(OnModelBoundListener<TestAfterBindPropsViewModel_, TestAfterBindPropsView> listener) {
+   * You may clear the listener by setting a null value, or by calling {@link #reset()}
+   */
+  public TestAfterBindPropsViewModel_ onBind(
+      OnModelBoundListener<TestAfterBindPropsViewModel_, TestAfterBindPropsView> listener) {
     onMutation();
     this.onModelBoundListener_epoxyGeneratedModel = listener;
     return this;
@@ -101,10 +100,55 @@ public class TestAfterBindPropsViewModel_ extends EpoxyModel<TestAfterBindPropsV
    * The listener will contribute to this model's hashCode state per the {@link
    * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
    * <p>
-   * You may clear the listener by setting a null value, or by calling {@link #reset()} */
-  public TestAfterBindPropsViewModel_ onUnbind(OnModelUnboundListener<TestAfterBindPropsViewModel_, TestAfterBindPropsView> listener) {
+   * You may clear the listener by setting a null value, or by calling {@link #reset()}
+   */
+  public TestAfterBindPropsViewModel_ onUnbind(
+      OnModelUnboundListener<TestAfterBindPropsViewModel_, TestAfterBindPropsView> listener) {
     onMutation();
     this.onModelUnboundListener_epoxyGeneratedModel = listener;
+    return this;
+  }
+
+  @Override
+  public void onVisibilityStateChanged(int visibilityState, final TestAfterBindPropsView object) {
+    if (onModelVisibilityStateChangedListener_epoxyGeneratedModel != null) {
+      onModelVisibilityStateChangedListener_epoxyGeneratedModel.onVisibilityStateChanged(this, object, visibilityState);
+    }
+    super.onVisibilityStateChanged(visibilityState, object);
+  }
+
+  /**
+   * Register a listener that will be called when this model visibility state has changed.
+   * <p>
+   * The listener will contribute to this model's hashCode state per the {@link
+   * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
+   */
+  public TestAfterBindPropsViewModel_ onVisibilityStateChanged(
+      OnModelVisibilityStateChangedListener<TestAfterBindPropsViewModel_, TestAfterBindPropsView> listener) {
+    onMutation();
+    this.onModelVisibilityStateChangedListener_epoxyGeneratedModel = listener;
+    return this;
+  }
+
+  @Override
+  public void onVisibilityChanged(float percentVisibleHeight, float percentVisibleWidth,
+      int visibleHeight, int visibleWidth, final TestAfterBindPropsView object) {
+    if (onModelVisibilityChangedListener_epoxyGeneratedModel != null) {
+      onModelVisibilityChangedListener_epoxyGeneratedModel.onVisibilityChanged(this, object, percentVisibleHeight, percentVisibleWidth, visibleHeight, visibleWidth);
+    }
+    super.onVisibilityChanged(percentVisibleHeight, percentVisibleWidth, visibleHeight, visibleWidth, object);
+  }
+
+  /**
+   * Register a listener that will be called when this model visibility has changed.
+   * <p>
+   * The listener will contribute to this model's hashCode state per the {@link
+   * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
+   */
+  public TestAfterBindPropsViewModel_ onVisibilityChanged(
+      OnModelVisibilityChangedListener<TestAfterBindPropsViewModel_, TestAfterBindPropsView> listener) {
+    onMutation();
+    this.onModelVisibilityChangedListener_epoxyGeneratedModel = listener;
     return this;
   }
 
@@ -114,7 +158,6 @@ public class TestAfterBindPropsViewModel_ extends EpoxyModel<TestAfterBindPropsV
    * @see TestAfterBindPropsView#setFlag(boolean)
    */
   public TestAfterBindPropsViewModel_ flag(boolean flag) {
-    assignedAttributes_epoxyGeneratedModel.set(0);
     onMutation();
     this.flag_Boolean = flag;
     return this;
@@ -127,10 +170,9 @@ public class TestAfterBindPropsViewModel_ extends EpoxyModel<TestAfterBindPropsV
   /**
    * <i>Optional</i>: Default value is false
    *
-   * @see TestAfterBindPropsView#setFlagSuper(boolean)
+   * @see TestAfterBindPropsSuperView#setFlagSuper(boolean)
    */
   public TestAfterBindPropsViewModel_ flagSuper(boolean flagSuper) {
-    assignedAttributes_epoxyGeneratedModel.set(1);
     onMutation();
     this.flagSuper_Boolean = flagSuper;
     return this;
@@ -147,8 +189,8 @@ public class TestAfterBindPropsViewModel_ extends EpoxyModel<TestAfterBindPropsV
   }
 
   @Override
-  public TestAfterBindPropsViewModel_ id(@NonNull Number... arg0) {
-    super.id(arg0);
+  public TestAfterBindPropsViewModel_ id(@Nullable Number... ids) {
+    super.id(ids);
     return this;
   }
 
@@ -159,33 +201,34 @@ public class TestAfterBindPropsViewModel_ extends EpoxyModel<TestAfterBindPropsV
   }
 
   @Override
-  public TestAfterBindPropsViewModel_ id(@NonNull CharSequence arg0) {
-    super.id(arg0);
+  public TestAfterBindPropsViewModel_ id(@Nullable CharSequence key) {
+    super.id(key);
     return this;
   }
 
   @Override
-  public TestAfterBindPropsViewModel_ id(@NonNull CharSequence arg0,
-      @NonNull CharSequence... arg1) {
-    super.id(arg0, arg1);
+  public TestAfterBindPropsViewModel_ id(@Nullable CharSequence key,
+      @Nullable CharSequence... otherKeys) {
+    super.id(key, otherKeys);
     return this;
   }
 
   @Override
-  public TestAfterBindPropsViewModel_ id(@NonNull CharSequence arg0, long arg1) {
-    super.id(arg0, arg1);
+  public TestAfterBindPropsViewModel_ id(@Nullable CharSequence key, long id) {
+    super.id(key, id);
     return this;
   }
 
   @Override
-  public TestAfterBindPropsViewModel_ layout(@LayoutRes int arg0) {
-    super.layout(arg0);
+  public TestAfterBindPropsViewModel_ layout(@LayoutRes int layoutRes) {
+    super.layout(layoutRes);
     return this;
   }
 
   @Override
-  public TestAfterBindPropsViewModel_ spanSizeOverride(@Nullable EpoxyModel.SpanSizeOverrideCallback arg0) {
-    super.spanSizeOverride(arg0);
+  public TestAfterBindPropsViewModel_ spanSizeOverride(
+      @Nullable EpoxyModel.SpanSizeOverrideCallback spanSizeCallback) {
+    super.spanSizeOverride(spanSizeCallback);
     return this;
   }
 
@@ -217,7 +260,8 @@ public class TestAfterBindPropsViewModel_ extends EpoxyModel<TestAfterBindPropsV
   public TestAfterBindPropsViewModel_ reset() {
     onModelBoundListener_epoxyGeneratedModel = null;
     onModelUnboundListener_epoxyGeneratedModel = null;
-    assignedAttributes_epoxyGeneratedModel.clear();
+    onModelVisibilityStateChangedListener_epoxyGeneratedModel = null;
+    onModelVisibilityChangedListener_epoxyGeneratedModel = null;
     this.flag_Boolean = false;
     this.flagSuper_Boolean = false;
     super.reset();
@@ -242,6 +286,12 @@ public class TestAfterBindPropsViewModel_ extends EpoxyModel<TestAfterBindPropsV
     if (((onModelUnboundListener_epoxyGeneratedModel == null) != (that.onModelUnboundListener_epoxyGeneratedModel == null))) {
       return false;
     }
+    if (((onModelVisibilityStateChangedListener_epoxyGeneratedModel == null) != (that.onModelVisibilityStateChangedListener_epoxyGeneratedModel == null))) {
+      return false;
+    }
+    if (((onModelVisibilityChangedListener_epoxyGeneratedModel == null) != (that.onModelVisibilityChangedListener_epoxyGeneratedModel == null))) {
+      return false;
+    }
     if ((flag_Boolean != that.flag_Boolean)) {
       return false;
     }
@@ -253,12 +303,14 @@ public class TestAfterBindPropsViewModel_ extends EpoxyModel<TestAfterBindPropsV
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (onModelBoundListener_epoxyGeneratedModel != null ? 1 : 0);
-    result = 31 * result + (onModelUnboundListener_epoxyGeneratedModel != null ? 1 : 0);
-    result = 31 * result + (flag_Boolean ? 1 : 0);
-    result = 31 * result + (flagSuper_Boolean ? 1 : 0);
-    return result;
+    int _result = super.hashCode();
+    _result = 31 * _result + (onModelBoundListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelUnboundListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelVisibilityStateChangedListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelVisibilityChangedListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (flag_Boolean ? 1 : 0);
+    _result = 31 * _result + (flagSuper_Boolean ? 1 : 0);
+    return _result;
   }
 
   @Override

@@ -1,17 +1,26 @@
 package com.airbnb.epoxy;
 
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.airbnb.epoxy.stickyheader.StickyHeaderCallbacks;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
 
-abstract class BaseEpoxyAdapter extends RecyclerView.Adapter<EpoxyViewHolder> {
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup;
+import androidx.recyclerview.widget.RecyclerView;
+
+public abstract class BaseEpoxyAdapter
+    extends RecyclerView.Adapter<EpoxyViewHolder>
+    implements StickyHeaderCallbacks {
+
   private static final String SAVED_STATE_ARG_VIEW_HOLDERS = "saved_state_view_holders";
 
   private int spanCount = 1;
@@ -30,7 +39,7 @@ abstract class BaseEpoxyAdapter extends RecyclerView.Adapter<EpoxyViewHolder> {
     public int getSpanSize(int position) {
       try {
         return getModelForPosition(position)
-            .getSpanSizeInternal(spanCount, position, getItemCount());
+            .spanSize(spanCount, position, getItemCount());
       } catch (IndexOutOfBoundsException e) {
         // There seems to be a GridLayoutManager bug where when the user is in accessibility mode
         // it incorrectly uses an outdated view position
@@ -45,7 +54,7 @@ abstract class BaseEpoxyAdapter extends RecyclerView.Adapter<EpoxyViewHolder> {
     }
   };
 
-  BaseEpoxyAdapter() {
+  public BaseEpoxyAdapter() {
     // Defaults to stable ids since view models generate unique ids. Set this to false in the
     // subclass if you don't want to support it
     setHasStableIds(true);
@@ -66,17 +75,30 @@ abstract class BaseEpoxyAdapter extends RecyclerView.Adapter<EpoxyViewHolder> {
   }
 
   /** Return the models currently being used by the adapter to populate the recyclerview. */
-  abstract List<EpoxyModel<?>> getCurrentModels();
+  abstract List<? extends EpoxyModel<?>> getCurrentModels();
 
   public boolean isEmpty() {
     return getCurrentModels().isEmpty();
   }
 
   @Override
+  public long getItemId(int position) {
+    // This does not call getModelForPosition so that we don't use the id of the empty model when
+    // hidden,
+    // so that the id stays constant when gone vs shown
+    return getCurrentModels().get(position).id();
+  }
+
+  @Override
+  public int getItemViewType(int position) {
+    return viewTypeManager.getViewTypeAndRememberModel(getModelForPosition(position));
+  }
+
+  @Override
   public EpoxyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     EpoxyModel<?> model = viewTypeManager.getModelForViewType(this, viewType);
     View view = model.buildView(parent);
-    return new EpoxyViewHolder(view, model.shouldSaveViewState());
+    return new EpoxyViewHolder(parent, view, model.shouldSaveViewState());
   }
 
   @Override
@@ -146,19 +168,6 @@ abstract class BaseEpoxyAdapter extends RecyclerView.Adapter<EpoxyViewHolder> {
     return boundViewHolders;
   }
 
-  @Override
-  public int getItemViewType(int position) {
-    return viewTypeManager.getViewType(getModelForPosition(position));
-  }
-
-  @Override
-  public long getItemId(int position) {
-    // This does not call getModelForPosition so that we don't use the id of the empty model when
-    // hidden,
-    // so that the id stays constant when gone vs shown
-    return getCurrentModels().get(position).id();
-  }
-
   EpoxyModel<?> getModelForPosition(int position) {
     return getCurrentModels().get(position);
   }
@@ -171,6 +180,15 @@ abstract class BaseEpoxyAdapter extends RecyclerView.Adapter<EpoxyViewHolder> {
     EpoxyModel<?> model = holder.getModel();
     holder.unbind();
     onModelUnbound(holder, model);
+  }
+
+  @CallSuper
+  @Override
+  public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+    // The last model is saved for optimization, but holding onto it can leak anything saved inside
+    // the model (like a click listener that references a Fragment). This is only needed during
+    // the viewholder creation phase, so it is safe to clear now.
+    viewTypeManager.lastModelForViewTypeLookup = null;
   }
 
   /**
@@ -281,4 +299,44 @@ abstract class BaseEpoxyAdapter extends RecyclerView.Adapter<EpoxyViewHolder> {
   public boolean isMultiSpan() {
     return spanCount > 1;
   }
+
+  //region Sticky header
+
+  /**
+   * Optional callback to setup the sticky view,
+   * by default it doesn't do anything.
+   * <p>
+   * The sub-classes should override the function if they are
+   * using sticky header feature.
+   */
+  @Override
+  public void setupStickyHeaderView(@NotNull View stickyHeader) {
+    // no-op
+  }
+
+  /**
+   * Optional callback to perform tear down operation on the
+   * sticky view, by default it doesn't do anything.
+   * <p>
+   * The sub-classes should override the function if they are
+   * using sticky header feature.
+   */
+  @Override
+  public void teardownStickyHeaderView(@NotNull View stickyHeader) {
+    // no-op
+  }
+
+  /**
+   * Called to check if the item at the position is a sticky item,
+   * by default returns false.
+   * <p>
+   * The sub-classes should override the function if they are
+   * using sticky header feature.
+   */
+  @Override
+  public boolean isStickyHeader(int position) {
+    return false;
+  }
+
+  //endregion
 }

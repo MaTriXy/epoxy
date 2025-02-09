@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  * The layouts must not specify a custom databinding class name or package via the
  * class="com.example.CustomClassName" override in the layout xml.
  */
-@Target(ElementType.PACKAGE)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.CLASS)
 public @interface EpoxyDataBindingPattern {
   /**
@@ -29,4 +29,15 @@ public @interface EpoxyDataBindingPattern {
    * databinding layout, Epoxy will generate a HeaderBindingModel_ class for that layout.
    */
   String layoutPrefix();
+
+  /**
+   * If true, any variable whose type does not implement equals and hashcode will have the
+   * {@link EpoxyAttribute.Option#DoNotHash} behavior applied to them automatically.
+   * <p>
+   * This is generally helpful for listeners - other variables should almost always implement
+   * equals and hashcode.
+   * <p>
+   * For details on the nuances of this, see https://github.com/airbnb/epoxy/wiki/DoNotHash
+   */
+  boolean enableDoNotHash() default true;
 }

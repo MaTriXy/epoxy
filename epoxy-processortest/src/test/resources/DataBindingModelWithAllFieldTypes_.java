@@ -1,9 +1,8 @@
 package com.airbnb.epoxy;
 
-import android.databinding.ViewDataBinding;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.Nullable;
+import androidx.databinding.ViewDataBinding;
 import java.lang.Boolean;
 import java.lang.Byte;
 import java.lang.CharSequence;
@@ -22,11 +21,16 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Generated file. Do not modify! */
+ * Generated file. Do not modify!
+ */
 public class DataBindingModelWithAllFieldTypes_ extends DataBindingModelWithAllFieldTypes implements GeneratedModel<DataBindingEpoxyModel.DataBindingHolder>, DataBindingModelWithAllFieldTypesBuilder {
   private OnModelBoundListener<DataBindingModelWithAllFieldTypes_, DataBindingEpoxyModel.DataBindingHolder> onModelBoundListener_epoxyGeneratedModel;
 
   private OnModelUnboundListener<DataBindingModelWithAllFieldTypes_, DataBindingEpoxyModel.DataBindingHolder> onModelUnboundListener_epoxyGeneratedModel;
+
+  private OnModelVisibilityStateChangedListener<DataBindingModelWithAllFieldTypes_, DataBindingEpoxyModel.DataBindingHolder> onModelVisibilityStateChangedListener_epoxyGeneratedModel;
+
+  private OnModelVisibilityChangedListener<DataBindingModelWithAllFieldTypes_, DataBindingEpoxyModel.DataBindingHolder> onModelVisibilityChangedListener_epoxyGeneratedModel;
 
   public DataBindingModelWithAllFieldTypes_() {
     super();
@@ -58,8 +62,10 @@ public class DataBindingModelWithAllFieldTypes_ extends DataBindingModelWithAllF
    * The listener will contribute to this model's hashCode state per the {@link
    * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
    * <p>
-   * You may clear the listener by setting a null value, or by calling {@link #reset()} */
-  public DataBindingModelWithAllFieldTypes_ onBind(OnModelBoundListener<DataBindingModelWithAllFieldTypes_, DataBindingEpoxyModel.DataBindingHolder> listener) {
+   * You may clear the listener by setting a null value, or by calling {@link #reset()}
+   */
+  public DataBindingModelWithAllFieldTypes_ onBind(
+      OnModelBoundListener<DataBindingModelWithAllFieldTypes_, DataBindingEpoxyModel.DataBindingHolder> listener) {
     onMutation();
     this.onModelBoundListener_epoxyGeneratedModel = listener;
     return this;
@@ -79,10 +85,56 @@ public class DataBindingModelWithAllFieldTypes_ extends DataBindingModelWithAllF
    * The listener will contribute to this model's hashCode state per the {@link
    * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
    * <p>
-   * You may clear the listener by setting a null value, or by calling {@link #reset()} */
-  public DataBindingModelWithAllFieldTypes_ onUnbind(OnModelUnboundListener<DataBindingModelWithAllFieldTypes_, DataBindingEpoxyModel.DataBindingHolder> listener) {
+   * You may clear the listener by setting a null value, or by calling {@link #reset()}
+   */
+  public DataBindingModelWithAllFieldTypes_ onUnbind(
+      OnModelUnboundListener<DataBindingModelWithAllFieldTypes_, DataBindingEpoxyModel.DataBindingHolder> listener) {
     onMutation();
     this.onModelUnboundListener_epoxyGeneratedModel = listener;
+    return this;
+  }
+
+  @Override
+  public void onVisibilityStateChanged(int visibilityState,
+      final DataBindingEpoxyModel.DataBindingHolder object) {
+    if (onModelVisibilityStateChangedListener_epoxyGeneratedModel != null) {
+      onModelVisibilityStateChangedListener_epoxyGeneratedModel.onVisibilityStateChanged(this, object, visibilityState);
+    }
+    super.onVisibilityStateChanged(visibilityState, object);
+  }
+
+  /**
+   * Register a listener that will be called when this model visibility state has changed.
+   * <p>
+   * The listener will contribute to this model's hashCode state per the {@link
+   * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
+   */
+  public DataBindingModelWithAllFieldTypes_ onVisibilityStateChanged(
+      OnModelVisibilityStateChangedListener<DataBindingModelWithAllFieldTypes_, DataBindingEpoxyModel.DataBindingHolder> listener) {
+    onMutation();
+    this.onModelVisibilityStateChangedListener_epoxyGeneratedModel = listener;
+    return this;
+  }
+
+  @Override
+  public void onVisibilityChanged(float percentVisibleHeight, float percentVisibleWidth,
+      int visibleHeight, int visibleWidth, final DataBindingEpoxyModel.DataBindingHolder object) {
+    if (onModelVisibilityChangedListener_epoxyGeneratedModel != null) {
+      onModelVisibilityChangedListener_epoxyGeneratedModel.onVisibilityChanged(this, object, percentVisibleHeight, percentVisibleWidth, visibleHeight, visibleWidth);
+    }
+    super.onVisibilityChanged(percentVisibleHeight, percentVisibleWidth, visibleHeight, visibleWidth, object);
+  }
+
+  /**
+   * Register a listener that will be called when this model visibility has changed.
+   * <p>
+   * The listener will contribute to this model's hashCode state per the {@link
+   * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
+   */
+  public DataBindingModelWithAllFieldTypes_ onVisibilityChanged(
+      OnModelVisibilityChangedListener<DataBindingModelWithAllFieldTypes_, DataBindingEpoxyModel.DataBindingHolder> listener) {
+    onMutation();
+    this.onModelVisibilityChangedListener_epoxyGeneratedModel = listener;
     return this;
   }
 
@@ -303,8 +355,8 @@ public class DataBindingModelWithAllFieldTypes_ extends DataBindingModelWithAllF
   }
 
   @Override
-  public DataBindingModelWithAllFieldTypes_ id(@NonNull Number... arg0) {
-    super.id(arg0);
+  public DataBindingModelWithAllFieldTypes_ id(@Nullable Number... ids) {
+    super.id(ids);
     return this;
   }
 
@@ -315,33 +367,34 @@ public class DataBindingModelWithAllFieldTypes_ extends DataBindingModelWithAllF
   }
 
   @Override
-  public DataBindingModelWithAllFieldTypes_ id(@NonNull CharSequence arg0) {
-    super.id(arg0);
+  public DataBindingModelWithAllFieldTypes_ id(@Nullable CharSequence key) {
+    super.id(key);
     return this;
   }
 
   @Override
-  public DataBindingModelWithAllFieldTypes_ id(@NonNull CharSequence arg0,
-      @NonNull CharSequence... arg1) {
-    super.id(arg0, arg1);
+  public DataBindingModelWithAllFieldTypes_ id(@Nullable CharSequence key,
+      @Nullable CharSequence... otherKeys) {
+    super.id(key, otherKeys);
     return this;
   }
 
   @Override
-  public DataBindingModelWithAllFieldTypes_ id(@NonNull CharSequence arg0, long arg1) {
-    super.id(arg0, arg1);
+  public DataBindingModelWithAllFieldTypes_ id(@Nullable CharSequence key, long id) {
+    super.id(key, id);
     return this;
   }
 
   @Override
-  public DataBindingModelWithAllFieldTypes_ layout(@LayoutRes int arg0) {
-    super.layout(arg0);
+  public DataBindingModelWithAllFieldTypes_ layout(@LayoutRes int layoutRes) {
+    super.layout(layoutRes);
     return this;
   }
 
   @Override
-  public DataBindingModelWithAllFieldTypes_ spanSizeOverride(@Nullable EpoxyModel.SpanSizeOverrideCallback arg0) {
-    super.spanSizeOverride(arg0);
+  public DataBindingModelWithAllFieldTypes_ spanSizeOverride(
+      @Nullable EpoxyModel.SpanSizeOverrideCallback spanSizeCallback) {
+    super.spanSizeOverride(spanSizeCallback);
     return this;
   }
 
@@ -506,6 +559,8 @@ public class DataBindingModelWithAllFieldTypes_ extends DataBindingModelWithAllF
   public DataBindingModelWithAllFieldTypes_ reset() {
     onModelBoundListener_epoxyGeneratedModel = null;
     onModelUnboundListener_epoxyGeneratedModel = null;
+    onModelVisibilityStateChangedListener_epoxyGeneratedModel = null;
+    onModelVisibilityChangedListener_epoxyGeneratedModel = null;
     super.valueInt = 0;
     super.valueInteger = null;
     super.valueShort = (short) 0;
@@ -547,6 +602,12 @@ public class DataBindingModelWithAllFieldTypes_ extends DataBindingModelWithAllF
       return false;
     }
     if (((onModelUnboundListener_epoxyGeneratedModel == null) != (that.onModelUnboundListener_epoxyGeneratedModel == null))) {
+      return false;
+    }
+    if (((onModelVisibilityStateChangedListener_epoxyGeneratedModel == null) != (that.onModelVisibilityStateChangedListener_epoxyGeneratedModel == null))) {
+      return false;
+    }
+    if (((onModelVisibilityChangedListener_epoxyGeneratedModel == null) != (that.onModelVisibilityChangedListener_epoxyGeneratedModel == null))) {
       return false;
     }
     if ((valueInt != that.valueInt)) {
@@ -617,33 +678,35 @@ public class DataBindingModelWithAllFieldTypes_ extends DataBindingModelWithAllF
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (onModelBoundListener_epoxyGeneratedModel != null ? 1 : 0);
-    result = 31 * result + (onModelUnboundListener_epoxyGeneratedModel != null ? 1 : 0);
+    int _result = super.hashCode();
+    _result = 31 * _result + (onModelBoundListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelUnboundListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelVisibilityStateChangedListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelVisibilityChangedListener_epoxyGeneratedModel != null ? 1 : 0);
     long temp;
-    result = 31 * result + valueInt;
-    result = 31 * result + (valueInteger != null ? valueInteger.hashCode() : 0);
-    result = 31 * result + valueShort;
-    result = 31 * result + (valueShortWrapper != null ? valueShortWrapper.hashCode() : 0);
-    result = 31 * result + valueChar;
-    result = 31 * result + (valueCharacter != null ? valueCharacter.hashCode() : 0);
-    result = 31 * result + valuebByte;
-    result = 31 * result + (valueByteWrapper != null ? valueByteWrapper.hashCode() : 0);
-    result = 31 * result + (int) (valueLong ^ (valueLong >>> 32));
-    result = 31 * result + (valueLongWrapper != null ? valueLongWrapper.hashCode() : 0);
+    _result = 31 * _result + valueInt;
+    _result = 31 * _result + (valueInteger != null ? valueInteger.hashCode() : 0);
+    _result = 31 * _result + valueShort;
+    _result = 31 * _result + (valueShortWrapper != null ? valueShortWrapper.hashCode() : 0);
+    _result = 31 * _result + valueChar;
+    _result = 31 * _result + (valueCharacter != null ? valueCharacter.hashCode() : 0);
+    _result = 31 * _result + valuebByte;
+    _result = 31 * _result + (valueByteWrapper != null ? valueByteWrapper.hashCode() : 0);
+    _result = 31 * _result + (int) (valueLong ^ (valueLong >>> 32));
+    _result = 31 * _result + (valueLongWrapper != null ? valueLongWrapper.hashCode() : 0);
     temp = Double.doubleToLongBits(valueDouble);
-    result = 31 * result + (int) (temp ^ (temp >>> 32));
-    result = 31 * result + (valueDoubleWrapper != null ? valueDoubleWrapper.hashCode() : 0);
-    result = 31 * result + (valueFloat != +0.0f ? Float.floatToIntBits(valueFloat) : 0);
-    result = 31 * result + (valueFloatWrapper != null ? valueFloatWrapper.hashCode() : 0);
-    result = 31 * result + (valueBoolean ? 1 : 0);
-    result = 31 * result + (valueBooleanWrapper != null ? valueBooleanWrapper.hashCode() : 0);
-    result = 31 * result + Arrays.hashCode(valueIntArray);
-    result = 31 * result + Arrays.hashCode(valueObjectArray);
-    result = 31 * result + (valueString != null ? valueString.hashCode() : 0);
-    result = 31 * result + (valueObject != null ? valueObject.hashCode() : 0);
-    result = 31 * result + (valueList != null ? valueList.hashCode() : 0);
-    return result;
+    _result = 31 * _result + (int) (temp ^ (temp >>> 32));
+    _result = 31 * _result + (valueDoubleWrapper != null ? valueDoubleWrapper.hashCode() : 0);
+    _result = 31 * _result + (valueFloat != +0.0f ? Float.floatToIntBits(valueFloat) : 0);
+    _result = 31 * _result + (valueFloatWrapper != null ? valueFloatWrapper.hashCode() : 0);
+    _result = 31 * _result + (valueBoolean ? 1 : 0);
+    _result = 31 * _result + (valueBooleanWrapper != null ? valueBooleanWrapper.hashCode() : 0);
+    _result = 31 * _result + Arrays.hashCode(valueIntArray);
+    _result = 31 * _result + Arrays.hashCode(valueObjectArray);
+    _result = 31 * _result + (valueString != null ? valueString.hashCode() : 0);
+    _result = 31 * _result + (valueObject != null ? valueObject.hashCode() : 0);
+    _result = 31 * _result + (valueList != null ? valueList.hashCode() : 0);
+    return _result;
   }
 
   @Override

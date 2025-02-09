@@ -1,10 +1,10 @@
 package com.airbnb.epoxy;
 
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import java.lang.CharSequence;
 import java.lang.IllegalArgumentException;
 import java.lang.IllegalStateException;
@@ -16,7 +16,8 @@ import java.lang.UnsupportedOperationException;
 import java.util.BitSet;
 
 /**
- * Generated file. Do not modify! */
+ * Generated file. Do not modify!
+ */
 public class TestFieldPropDoNotHashOptionViewModel_ extends EpoxyModel<TestFieldPropDoNotHashOptionView> implements GeneratedModel<TestFieldPropDoNotHashOptionView>, TestFieldPropDoNotHashOptionViewModelBuilder {
   private final BitSet assignedAttributes_epoxyGeneratedModel = new BitSet(1);
 
@@ -24,8 +25,13 @@ public class TestFieldPropDoNotHashOptionViewModel_ extends EpoxyModel<TestField
 
   private OnModelUnboundListener<TestFieldPropDoNotHashOptionViewModel_, TestFieldPropDoNotHashOptionView> onModelUnboundListener_epoxyGeneratedModel;
 
+  private OnModelVisibilityStateChangedListener<TestFieldPropDoNotHashOptionViewModel_, TestFieldPropDoNotHashOptionView> onModelVisibilityStateChangedListener_epoxyGeneratedModel;
+
+  private OnModelVisibilityChangedListener<TestFieldPropDoNotHashOptionViewModel_, TestFieldPropDoNotHashOptionView> onModelVisibilityChangedListener_epoxyGeneratedModel;
+
   /**
-   * Bitset index: 0 */
+   * Bitset index: 0
+   */
   @NonNull
   private View.OnClickListener value_OnClickListener;
 
@@ -44,7 +50,7 @@ public class TestFieldPropDoNotHashOptionViewModel_ extends EpoxyModel<TestField
   }
 
   @Override
-  protected TestFieldPropDoNotHashOptionView buildView(ViewGroup parent) {
+  public TestFieldPropDoNotHashOptionView buildView(ViewGroup parent) {
     TestFieldPropDoNotHashOptionView v = new TestFieldPropDoNotHashOptionView(parent.getContext());
     v.setLayoutParams(new ViewGroup.MarginLayoutParams(ViewGroup.MarginLayoutParams.WRAP_CONTENT, ViewGroup.MarginLayoutParams.WRAP_CONTENT));
     return v;
@@ -91,8 +97,10 @@ public class TestFieldPropDoNotHashOptionViewModel_ extends EpoxyModel<TestField
    * The listener will contribute to this model's hashCode state per the {@link
    * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
    * <p>
-   * You may clear the listener by setting a null value, or by calling {@link #reset()} */
-  public TestFieldPropDoNotHashOptionViewModel_ onBind(OnModelBoundListener<TestFieldPropDoNotHashOptionViewModel_, TestFieldPropDoNotHashOptionView> listener) {
+   * You may clear the listener by setting a null value, or by calling {@link #reset()}
+   */
+  public TestFieldPropDoNotHashOptionViewModel_ onBind(
+      OnModelBoundListener<TestFieldPropDoNotHashOptionViewModel_, TestFieldPropDoNotHashOptionView> listener) {
     onMutation();
     this.onModelBoundListener_epoxyGeneratedModel = listener;
     return this;
@@ -112,24 +120,71 @@ public class TestFieldPropDoNotHashOptionViewModel_ extends EpoxyModel<TestField
    * The listener will contribute to this model's hashCode state per the {@link
    * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
    * <p>
-   * You may clear the listener by setting a null value, or by calling {@link #reset()} */
-  public TestFieldPropDoNotHashOptionViewModel_ onUnbind(OnModelUnboundListener<TestFieldPropDoNotHashOptionViewModel_, TestFieldPropDoNotHashOptionView> listener) {
+   * You may clear the listener by setting a null value, or by calling {@link #reset()}
+   */
+  public TestFieldPropDoNotHashOptionViewModel_ onUnbind(
+      OnModelUnboundListener<TestFieldPropDoNotHashOptionViewModel_, TestFieldPropDoNotHashOptionView> listener) {
     onMutation();
     this.onModelUnboundListener_epoxyGeneratedModel = listener;
     return this;
   }
 
+  @Override
+  public void onVisibilityStateChanged(int visibilityState,
+      final TestFieldPropDoNotHashOptionView object) {
+    if (onModelVisibilityStateChangedListener_epoxyGeneratedModel != null) {
+      onModelVisibilityStateChangedListener_epoxyGeneratedModel.onVisibilityStateChanged(this, object, visibilityState);
+    }
+    super.onVisibilityStateChanged(visibilityState, object);
+  }
+
   /**
-   * Set a click listener that will provide the parent view, model, and adapter position of the clicked view. This will clear the normal View.OnClickListener if one has been set */
-  @NonNull
-  public TestFieldPropDoNotHashOptionViewModel_ value(final OnModelClickListener<TestFieldPropDoNotHashOptionViewModel_, TestFieldPropDoNotHashOptionView> value) {
+   * Register a listener that will be called when this model visibility state has changed.
+   * <p>
+   * The listener will contribute to this model's hashCode state per the {@link
+   * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
+   */
+  public TestFieldPropDoNotHashOptionViewModel_ onVisibilityStateChanged(
+      OnModelVisibilityStateChangedListener<TestFieldPropDoNotHashOptionViewModel_, TestFieldPropDoNotHashOptionView> listener) {
+    onMutation();
+    this.onModelVisibilityStateChangedListener_epoxyGeneratedModel = listener;
+    return this;
+  }
+
+  @Override
+  public void onVisibilityChanged(float percentVisibleHeight, float percentVisibleWidth,
+      int visibleHeight, int visibleWidth, final TestFieldPropDoNotHashOptionView object) {
+    if (onModelVisibilityChangedListener_epoxyGeneratedModel != null) {
+      onModelVisibilityChangedListener_epoxyGeneratedModel.onVisibilityChanged(this, object, percentVisibleHeight, percentVisibleWidth, visibleHeight, visibleWidth);
+    }
+    super.onVisibilityChanged(percentVisibleHeight, percentVisibleWidth, visibleHeight, visibleWidth, object);
+  }
+
+  /**
+   * Register a listener that will be called when this model visibility has changed.
+   * <p>
+   * The listener will contribute to this model's hashCode state per the {@link
+   * com.airbnb.epoxy.EpoxyAttribute.Option#DoNotHash} rules.
+   */
+  public TestFieldPropDoNotHashOptionViewModel_ onVisibilityChanged(
+      OnModelVisibilityChangedListener<TestFieldPropDoNotHashOptionViewModel_, TestFieldPropDoNotHashOptionView> listener) {
+    onMutation();
+    this.onModelVisibilityChangedListener_epoxyGeneratedModel = listener;
+    return this;
+  }
+
+  /**
+   * Set a click listener that will provide the parent view, model, and adapter position of the clicked view. This will clear the normal View.OnClickListener if one has been set
+   */
+  public TestFieldPropDoNotHashOptionViewModel_ value(
+      @NonNull final OnModelClickListener<TestFieldPropDoNotHashOptionViewModel_, TestFieldPropDoNotHashOptionView> value) {
     assignedAttributes_epoxyGeneratedModel.set(0);
     onMutation();
     if (value == null) {
       this.value_OnClickListener = null;
     }
     else {
-      this.value_OnClickListener = new WrappedEpoxyModelClickListener(value);
+      this.value_OnClickListener = new WrappedEpoxyModelClickListener<>(value);
     }
     return this;
   }
@@ -161,8 +216,8 @@ public class TestFieldPropDoNotHashOptionViewModel_ extends EpoxyModel<TestField
   }
 
   @Override
-  public TestFieldPropDoNotHashOptionViewModel_ id(@NonNull Number... arg0) {
-    super.id(arg0);
+  public TestFieldPropDoNotHashOptionViewModel_ id(@Nullable Number... ids) {
+    super.id(ids);
     return this;
   }
 
@@ -173,32 +228,33 @@ public class TestFieldPropDoNotHashOptionViewModel_ extends EpoxyModel<TestField
   }
 
   @Override
-  public TestFieldPropDoNotHashOptionViewModel_ id(@NonNull CharSequence arg0) {
-    super.id(arg0);
+  public TestFieldPropDoNotHashOptionViewModel_ id(@Nullable CharSequence key) {
+    super.id(key);
     return this;
   }
 
   @Override
-  public TestFieldPropDoNotHashOptionViewModel_ id(@NonNull CharSequence arg0,
-      @NonNull CharSequence... arg1) {
-    super.id(arg0, arg1);
+  public TestFieldPropDoNotHashOptionViewModel_ id(@Nullable CharSequence key,
+      @Nullable CharSequence... otherKeys) {
+    super.id(key, otherKeys);
     return this;
   }
 
   @Override
-  public TestFieldPropDoNotHashOptionViewModel_ id(@NonNull CharSequence arg0, long arg1) {
-    super.id(arg0, arg1);
+  public TestFieldPropDoNotHashOptionViewModel_ id(@Nullable CharSequence key, long id) {
+    super.id(key, id);
     return this;
   }
 
   @Override
-  public TestFieldPropDoNotHashOptionViewModel_ layout(@LayoutRes int arg0) {
+  public TestFieldPropDoNotHashOptionViewModel_ layout(@LayoutRes int layoutRes) {
     throw new UnsupportedOperationException("Layout resources are unsupported with programmatic views.");
   }
 
   @Override
-  public TestFieldPropDoNotHashOptionViewModel_ spanSizeOverride(@Nullable EpoxyModel.SpanSizeOverrideCallback arg0) {
-    super.spanSizeOverride(arg0);
+  public TestFieldPropDoNotHashOptionViewModel_ spanSizeOverride(
+      @Nullable EpoxyModel.SpanSizeOverrideCallback spanSizeCallback) {
+    super.spanSizeOverride(spanSizeCallback);
     return this;
   }
 
@@ -230,6 +286,8 @@ public class TestFieldPropDoNotHashOptionViewModel_ extends EpoxyModel<TestField
   public TestFieldPropDoNotHashOptionViewModel_ reset() {
     onModelBoundListener_epoxyGeneratedModel = null;
     onModelUnboundListener_epoxyGeneratedModel = null;
+    onModelVisibilityStateChangedListener_epoxyGeneratedModel = null;
+    onModelVisibilityChangedListener_epoxyGeneratedModel = null;
     assignedAttributes_epoxyGeneratedModel.clear();
     this.value_OnClickListener = null;
     super.reset();
@@ -254,6 +312,12 @@ public class TestFieldPropDoNotHashOptionViewModel_ extends EpoxyModel<TestField
     if (((onModelUnboundListener_epoxyGeneratedModel == null) != (that.onModelUnboundListener_epoxyGeneratedModel == null))) {
       return false;
     }
+    if (((onModelVisibilityStateChangedListener_epoxyGeneratedModel == null) != (that.onModelVisibilityStateChangedListener_epoxyGeneratedModel == null))) {
+      return false;
+    }
+    if (((onModelVisibilityChangedListener_epoxyGeneratedModel == null) != (that.onModelVisibilityChangedListener_epoxyGeneratedModel == null))) {
+      return false;
+    }
     if (((value_OnClickListener == null) != (that.value_OnClickListener == null))) {
       return false;
     }
@@ -262,11 +326,13 @@ public class TestFieldPropDoNotHashOptionViewModel_ extends EpoxyModel<TestField
 
   @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + (onModelBoundListener_epoxyGeneratedModel != null ? 1 : 0);
-    result = 31 * result + (onModelUnboundListener_epoxyGeneratedModel != null ? 1 : 0);
-    result = 31 * result + (value_OnClickListener != null ? 1 : 0);
-    return result;
+    int _result = super.hashCode();
+    _result = 31 * _result + (onModelBoundListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelUnboundListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelVisibilityStateChangedListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (onModelVisibilityChangedListener_epoxyGeneratedModel != null ? 1 : 0);
+    _result = 31 * _result + (value_OnClickListener != null ? 1 : 0);
+    return _result;
   }
 
   @Override
